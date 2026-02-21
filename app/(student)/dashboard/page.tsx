@@ -43,7 +43,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F3F4F6] pt-24 pb-12">
+    <div className="min-h-screen bg-white pt-24 pb-12">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="mb-10">
           <h1 className="font-display text-4xl text-[#1A2B4C] tracking-tight">لوحة التحكم</h1>

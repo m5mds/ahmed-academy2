@@ -89,7 +89,7 @@ export default function ContentPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F3F4F6]">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-gray-400 font-mono-text text-sm">جاري التحميل...</div>
       </div>
     )
@@ -97,7 +97,7 @@ export default function ContentPage() {
 
   if (!data?.enrollment) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F3F4F6] pt-24">
+      <div className="min-h-screen flex items-center justify-center bg-white pt-24">
         <div className="text-center bg-white p-12 border border-gray-200">
           <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-500 text-lg mb-4">لم تسجل في أي مادة بعد</p>
@@ -111,7 +111,7 @@ export default function ContentPage() {
   const chapters = data?.grouped?.[activeTab] || []
 
   return (
-    <div className="min-h-screen bg-[#F3F4F6] pt-24 pb-12">
+    <div className="min-h-screen bg-white pt-24 pb-12">
       <div className="max-w-4xl mx-auto px-6 md:px-12">
         <div className="mb-8">
           <h1 className="font-display text-4xl text-[#1A2B4C] tracking-tight">المحتوى التعليمي</h1>
@@ -142,15 +142,15 @@ export default function ContentPage() {
           </div>
         )}
 
-        <div className="flex gap-2 mb-8">
+        <div className="flex gap-2 mb-8 border-b border-gray-200">
           {tabs.map((tier) => (
             <button
               key={tier}
               onClick={() => setActiveTab(tier)}
-              className={`flex-1 py-3 px-4 text-sm text-center transition-all border ${
+              className={`flex-1 py-3 px-4 text-sm text-center transition-all border-b-2 -mb-px ${
                 activeTab === tier
-                  ? 'bg-[#1A2B4C] text-white border-[#1A2B4C]'
-                  : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'
+                  ? 'bg-white text-[#1A2B4C] border-[#FF4F00] border-b-2 font-semibold'
+                  : 'bg-white text-gray-500 border-transparent hover:text-[#1A2B4C] hover:border-gray-300'
               }`}
             >
               {TIER_LABELS[tier]}

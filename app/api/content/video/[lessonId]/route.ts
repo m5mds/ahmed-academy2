@@ -5,6 +5,7 @@ import { prisma } from '@/lib/db'
 import { checkLessonAccess } from '@/lib/access-control'
 import { generateSignedVideoUrl } from '@/lib/content-protection'
 
+// Backend security: 1. JWT 2. Subscription expiry 3. Lock/Unlock (per-student overrides global) 4. Tier (in checkLessonAccess)
 export async function GET(
   _request: Request,
   { params }: { params: { lessonId: string } }
