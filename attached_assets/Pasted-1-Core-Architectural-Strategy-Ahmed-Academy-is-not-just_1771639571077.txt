@@ -1,0 +1,42 @@
+1. Core Architectural Strategy
+Ahmed Academy is not just a portal; it is a high-availability educational infrastructure. It uses a geographically aware, multi-layered stack:
+
+Edge Computing: Leverages Next.js 14 for server-side logic and Edge-ready API routes.
+Media Sovereignty: Videos are never hosted "openly." They are sequestered within Cloudflare Stream and delivered via JWS (JSON Web Signatures) signed URLs that expire after 3600 seconds.
+Horizontal Scaling: The signaling server (Mediasoup) is configured to utilize up to 4 CPU cores (workers), each handling a segment of the WebRTC traffic for maximum stability during large live classes.
+2. Content Protection & Anti-Download DNA
+The platform is designed with "Content Sovereignty" at its core:
+
+Signed Access Control: Students never see a direct .mp4 link. The video player requests a signed URL from /api/content/video/[lessonId]. This route performs a "triple-check":
+Identity: Is the student logged in with a valid JWT?
+Course Ownership: Does the student have an ACTIVE subscription?
+Tier Access: Does their payment type (MID1, MID2, etc.) match the lesson’s SectionTag?
+Cryptographic URLs: Even if a student inspects the source code, the URL they find is cryptographically signed by Cloudflare and bound to a 1-hour expiration window. It cannot be shared or used by others.
+The "No-Download" Player: The video implementation uses a React-based player optimized to prevent standard "Right-Click > Save" browser behaviors and is integrated with Cloudflare Stream’s proprietary player security.
+3. The "Smart" Subscription System
+The platform features a highly granular Multi-Tier Financial Model:
+
+Payment Tiers: MID1 (First Semester), MID2 (Second Semester), FINAL (Exam Prep), and FULL (All Access).
+Automatic Gating: The database automatically gates content based on these tags. A MID1 student is programmatically blocked from MID2 sections until they perform another payment.
+Vetting Pipeline: A dedicated Payment model tracks the amount, a receiptImageUrl for visual proof, and an audit trail showing which admin reviewedBy and when (reviewedAt).
+4. Live Classroom Automation (The "Ghost" Assistant)
+The platform uses Zoom Webhooks to act as a silent assistant:
+
+Auto-Attendance: When a student joins the Zoom meeting, a webhook (meeting.participant_joined) automatically creates an attendance record in YOUR database.
+Duration Tracking: When they leave, the platform calculates the durationSeconds they stayed and updates their DailyActivity automatically.
+Recording Auto-Drop: As soon as Zoom finishes processing the cloud recording, a webhook (recording.completed) sends the URL back to your platform, which then bulk-notifies all eligible students via the RECORDING_AVAILABLE notification type.
+5. Student Psychology & Gamification
+Progress Persistence: The system tracks the exact second (lastPositionSeconds) a student stops watching, allowing them to resume seamlessly across devices.
+Engagement Analytics: Every day, the platform aggregates minutesWatched and liveAttended into a DailyActivity map, which is used to unlock Achievements (gamification).
+Certificates: Only students with a math-verified 100% completionPercent can trigger the api/certificates/generate endpoint, which uses @react-pdf/renderer to stamp their name on a secure certificate.
+6. Administrative Superpowers
+The Admin Dashboard isn't just for viewing stats; it’s for platform governance:
+
+Bulk Extensions: A "Surprise" tool for retention—Admins can bulk-extend all subscriptions for a specific course by X days in one click.
+Broadcast Engine: Send targeted push notifications to all students, or only those with active subscriptions, or only those in a specific course.
+Semester Management: The SemesterSetting model allows admins to define global school terms, which can be used to automatically archive or expire course content en masse.
+7. Mobile & UX Performance
+PWA Ready: Includes a manifest.json and service worker integration. Students can install it as a "Home Screen App," removing the browser chrome for a distraction-free experience.
+RTL Engineering: The entire CSS stack (built on Tailwind) is wrapped in a dir="rtl" root with specialized rtl.css for Arabic-optimized padding, borders, and animations.
+Theme Engine: Seamless Light/Dark mode switching with system preference detection.
+Summary for Stakeholders: "Ahmed Academy is a vault-secured, RTL-optimized educational ecosystem. It automates everything from attendance tracking via Zoom to content gating via signed JWS tokens, providing a premium, native-app experience that protects intellectual property while maximizing student engagement through tiered learning and gamification."

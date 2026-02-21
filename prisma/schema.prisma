@@ -18,6 +18,19 @@ enum CourseLevel {
   ADVANCED
 }
 
+enum Tier {
+  MID1
+  MID2
+  FINAL
+  FULL
+}
+
+enum NotificationType {
+  RECORDING_AVAILABLE
+  GENERAL
+  ANNOUNCEMENT
+}
+
 model User {
   id           String   @id @default(uuid())
   email        String   @unique
@@ -33,28 +46,31 @@ model User {
   notes          Note[]
   certificates   Certificate[]
   testimonials   Testimonial[]
+  attendance     Attendance[]
+  dailyActivity  DailyActivity[]
+  achievements   Achievement[]
 
   @@map("users")
 }
 
 model Course {
-  id              String      @id @default(uuid())
-  slug            String      @unique
-  title           String
-  description     String?
-  shortDescription String?    @map("short_description")
-  imageUrl        String?     @map("image_url")
-  previewVideoUrl String?     @map("preview_video_url")
-  price           Decimal     @default(0) @db.Decimal(10, 2)
-  isFree          Boolean     @default(false) @map("is_free")
-  category        String?
-  level           CourseLevel @default(BEGINNER)
-  durationHours   Int?        @map("duration_hours")
-  studentsCount   Int         @default(0) @map("students_count")
-  rating          Decimal     @default(0) @db.Decimal(3, 2)
-  isPublished     Boolean     @default(false) @map("is_published")
-  createdAt       DateTime    @default(now()) @map("created_at")
-  updatedAt       DateTime    @updatedAt @map("updated_at")
+  id               String      @id @default(uuid())
+  slug             String      @unique
+  title            String
+  description      String?
+  shortDescription String?     @map("short_description")
+  imageUrl         String?     @map("image_url")
+  previewVideoUrl  String?     @map("preview_video_url")
+  price            Decimal     @default(0) @db.Decimal(10, 2)
+  isFree           Boolean     @default(false) @map("is_free")
+  category         String?
+  level            CourseLevel @default(BEGINNER)
+  durationHours    Int?        @map("duration_hours")
+  studentsCount    Int         @default(0) @map("students_count")
+  rating           Decimal     @default(0) @db.Decimal(3, 2)
+  isPublished      Boolean     @default(false) @map("is_published")
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime    @updatedAt @map("updated_at")
 
   lessons      Lesson[]
   enrollments  Enrollment[]
@@ -65,17 +81,18 @@ model Course {
 }
 
 model Lesson {
-  id             String   @id @default(uuid())
+  id              String   @id @default(uuid())
   courseId        String   @map("course_id")
-  title          String
-  description    String?
-  videoUrl       String?  @map("video_url")
-  durationMinutes Int?    @map("duration_minutes")
-  orderIndex     Int      @map("order_index")
-  isPreview      Boolean  @default(false) @map("is_preview")
-  resourcesUrl   String?  @map("resources_url")
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
+  title           String
+  description     String?
+  videoUrl        String?  @map("video_url")
+  durationMinutes Int?     @map("duration_minutes")
+  orderIndex      Int      @map("order_index")
+  isPreview       Boolean  @default(false) @map("is_preview")
+  resourcesUrl    String?  @map("resources_url")
+  tier            Tier     @default(FULL)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
 
   course   Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
   progress LessonProgress[]
@@ -87,7 +104,8 @@ model Lesson {
 model Enrollment {
   id          String    @id @default(uuid())
   userId      String    @map("user_id")
-  courseId     String    @map("course_id")
+  courseId    String    @map("course_id")
+  tier        Tier      @default(FULL)
   enrolledAt  DateTime  @default(now()) @map("enrolled_at")
   completedAt DateTime? @map("completed_at")
   progress    Decimal   @default(0) @db.Decimal(5, 2)
@@ -114,6 +132,57 @@ model LessonProgress {
   @@map("lesson_progress")
 }
 
+model Attendance {
+  id              String   @id @default(uuid())
+  userId          String   @map("user_id")
+  meetingId       String   @map("meeting_id")
+  joinTime        DateTime @map("join_time")
+  leaveTime       DateTime? @map("leave_time")
+  durationSeconds Int?     @map("duration_seconds")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("attendance")
+}
+
+model DailyActivity {
+  id             String   @id @default(uuid())
+  userId         String   @map("user_id")
+  date           DateTime @default(now()) @db.Date
+  minutesWatched Int      @default(0) @map("minutes_watched")
+  liveAttended   Boolean  @default(false) @map("live_attended")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@map("daily_activity")
+}
+
+model Achievement {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  type      String
+  unlockedAt DateTime @default(now()) @map("unlocked_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("achievements")
+}
+
+model Payment {
+  id             String   @id @default(uuid())
+  userId         String   @map("user_id")
+  amount         Decimal  @db.Decimal(10, 2)
+  tier           Tier
+  receiptImageUrl String   @map("receipt_image_url")
+  isReviewed     Boolean  @default(false) @map("is_reviewed")
+  reviewedBy     String?  @map("reviewed_by")
+  reviewedAt     DateTime? @map("reviewed_at")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@map("payments")
+}
+
 model Note {
   id               String   @id @default(uuid())
   userId           String   @map("user_id")
@@ -132,7 +201,7 @@ model Note {
 model Certificate {
   id             String   @id @default(uuid())
   userId         String   @map("user_id")
-  courseId        String   @map("course_id")
+  courseId       String   @map("course_id")
   certificateUrl String?  @map("certificate_url")
   issuedAt       DateTime @default(now()) @map("issued_at")
 
@@ -146,7 +215,7 @@ model Certificate {
 model Testimonial {
   id         String   @id @default(uuid())
   userId     String   @map("user_id")
-  courseId    String   @map("course_id")
+  courseId   String   @map("course_id")
   content    String
   rating     Int
   isFeatured Boolean  @default(false) @map("is_featured")
