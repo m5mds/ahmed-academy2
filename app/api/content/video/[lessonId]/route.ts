@@ -1,49 +1,44 @@
 import { NextResponse } from 'next/server'
-import { verifyAccessTokenFromRequest } from '@/lib/auth-server'
+import { cookies } from 'next/headers'
+import { verifyAccessToken } from '@/lib/auth'
 import { prisma } from '@/lib/db'
-import { generateSignedVideoUrl, checkTierAccess } from '@/lib/content-protection'
+import { checkLessonAccess } from '@/lib/access-control'
+import { generateSignedVideoUrl } from '@/lib/content-protection'
 
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: { lessonId: string } }
 ) {
   try {
-    const userPayload = await verifyAccessTokenFromRequest(request as any)
-    if (!userPayload) {
+    const cookieStore = await cookies()
+    const token = cookieStore.get('access_token')?.value
+    if (!token) {
       return NextResponse.json({ message: 'غير مصرح' }, { status: 401 })
+    }
+
+    const payload = await verifyAccessToken(token)
+    if (!payload) {
+      return NextResponse.json({ message: 'الجلسة منتهية' }, { status: 401 })
+    }
+
+    const accessResult = await checkLessonAccess(payload.userId, params.lessonId)
+
+    if (!accessResult.allowed) {
+      return NextResponse.json({ message: accessResult.reason }, { status: 403 })
     }
 
     const lesson = await prisma.lesson.findUnique({
       where: { id: params.lessonId },
-      include: { course: true }
     })
 
-    if (!lesson) {
-      return NextResponse.json({ message: 'الدرس غير موجود' }, { status: 404 })
+    if (!lesson?.videoUrl) {
+      return NextResponse.json({ message: 'لا يوجد فيديو لهذا الدرس' }, { status: 404 })
     }
 
-    // Check enrollment and tier
-    const enrollment = await prisma.enrollment.findUnique({
-      where: {
-        userId_courseId: {
-          userId: userPayload.userId,
-          courseId: lesson.courseId
-        }
-      }
-    })
+    const signedUrl = await generateSignedVideoUrl(lesson.videoUrl)
 
-    if (!enrollment && !lesson.isPreview) {
-      return NextResponse.json({ message: 'يجب الاشتراك في الدورة أولاً' }, { status: 403 })
-    }
-
-    if (enrollment && !checkTierAccess(enrollment.tier, lesson.tier)) {
-      return NextResponse.json({ message: 'مستواك الحالي لا يسمح بالوصول لهذا الدرس' }, { status: 403 })
-    }
-
-    const signedUrl = await generateSignedVideoUrl(lesson.videoUrl || '')
-    
     return NextResponse.json({ signedUrl })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ message: 'حدث خطأ في الخادم' }, { status: 500 })
   }
 }

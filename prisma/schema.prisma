@@ -25,6 +25,17 @@ enum Tier {
   FULL
 }
 
+enum LockScope {
+  GLOBAL
+  PER_STUDENT
+}
+
+enum LockLevel {
+  TIER
+  CHAPTER
+  LESSON
+}
+
 enum NotificationType {
   RECORDING_AVAILABLE
   GENERAL
@@ -72,6 +83,7 @@ model Course {
   createdAt        DateTime    @default(now()) @map("created_at")
   updatedAt        DateTime    @updatedAt @map("updated_at")
 
+  chapters     Chapter[]
   lessons      Lesson[]
   enrollments  Enrollment[]
   certificates Certificate[]
@@ -80,9 +92,25 @@ model Course {
   @@map("courses")
 }
 
+model Chapter {
+  id         String   @id @default(uuid())
+  courseId    String   @map("course_id")
+  title      String
+  tier       Tier     @default(MID1)
+  orderIndex Int      @map("order_index")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+
+  @@map("chapters")
+}
+
 model Lesson {
   id              String   @id @default(uuid())
-  courseId        String   @map("course_id")
+  courseId         String   @map("course_id")
+  chapterId        String?  @map("chapter_id")
   title           String
   description     String?
   videoUrl        String?  @map("video_url")
@@ -95,17 +123,45 @@ model Lesson {
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   course   Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  chapter  Chapter?         @relation(fields: [chapterId], references: [id], onDelete: SetNull)
   progress LessonProgress[]
   notes    Note[]
 
   @@map("lessons")
 }
 
+model ContentLock {
+  id        String    @id @default(uuid())
+  scope     LockScope
+  level     LockLevel
+  targetId  String    @map("target_id")
+  studentId String?   @map("student_id")
+  locked    Boolean   @default(true)
+  createdBy String    @map("created_by")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@map("content_locks")
+}
+
+model LockAudit {
+  id        String    @id @default(uuid())
+  adminId   String    @map("admin_id")
+  studentId String?   @map("student_id")
+  level     LockLevel
+  scope     LockScope
+  targetId  String    @map("target_id")
+  action    String
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@map("lock_audit")
+}
+
 model Enrollment {
   id          String    @id @default(uuid())
   userId      String    @map("user_id")
-  courseId    String    @map("course_id")
+  courseId     String    @map("course_id")
   tier        Tier      @default(FULL)
+  expiresAt   DateTime? @map("expires_at")
   enrolledAt  DateTime  @default(now()) @map("enrolled_at")
   completedAt DateTime? @map("completed_at")
   progress    Decimal   @default(0) @db.Decimal(5, 2)
@@ -133,12 +189,12 @@ model LessonProgress {
 }
 
 model Attendance {
-  id              String   @id @default(uuid())
-  userId          String   @map("user_id")
-  meetingId       String   @map("meeting_id")
-  joinTime        DateTime @map("join_time")
+  id              String    @id @default(uuid())
+  userId          String    @map("user_id")
+  meetingId       String    @map("meeting_id")
+  joinTime        DateTime  @map("join_time")
   leaveTime       DateTime? @map("leave_time")
-  durationSeconds Int?     @map("duration_seconds")
+  durationSeconds Int?      @map("duration_seconds")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -159,9 +215,9 @@ model DailyActivity {
 }
 
 model Achievement {
-  id        String   @id @default(uuid())
-  userId    String   @map("user_id")
-  type      String
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  type       String
   unlockedAt DateTime @default(now()) @map("unlocked_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -170,15 +226,15 @@ model Achievement {
 }
 
 model Payment {
-  id             String   @id @default(uuid())
-  userId         String   @map("user_id")
-  amount         Decimal  @db.Decimal(10, 2)
-  tier           Tier
-  receiptImageUrl String   @map("receipt_image_url")
-  isReviewed     Boolean  @default(false) @map("is_reviewed")
-  reviewedBy     String?  @map("reviewed_by")
-  reviewedAt     DateTime? @map("reviewed_at")
-  createdAt      DateTime @default(now()) @map("created_at")
+  id              String    @id @default(uuid())
+  userId          String    @map("user_id")
+  amount          Decimal   @db.Decimal(10, 2)
+  tier            Tier
+  receiptImageUrl String    @map("receipt_image_url")
+  isReviewed      Boolean   @default(false) @map("is_reviewed")
+  reviewedBy      String?   @map("reviewed_by")
+  reviewedAt      DateTime? @map("reviewed_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
 
   @@map("payments")
 }
@@ -201,7 +257,7 @@ model Note {
 model Certificate {
   id             String   @id @default(uuid())
   userId         String   @map("user_id")
-  courseId       String   @map("course_id")
+  courseId        String   @map("course_id")
   certificateUrl String?  @map("certificate_url")
   issuedAt       DateTime @default(now()) @map("issued_at")
 
@@ -215,7 +271,7 @@ model Certificate {
 model Testimonial {
   id         String   @id @default(uuid())
   userId     String   @map("user_id")
-  courseId   String   @map("course_id")
+  courseId    String   @map("course_id")
   content    String
   rating     Int
   isFeatured Boolean  @default(false) @map("is_featured")

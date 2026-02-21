@@ -49,6 +49,11 @@ export default function Header() {
             </Link>
             {user ? (
               <>
+                {user.role === 'STUDENT' && (
+                  <Link href="/content" className="text-neutral-600 hover:text-primary transition-colors">
+                    المحتوى التعليمي
+                  </Link>
+                )}
                 <Link
                   href={user.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard'}
                   className="text-neutral-600 hover:text-primary transition-colors"
@@ -106,6 +111,9 @@ export default function Header() {
               <Link href="/courses" className="text-neutral-600 hover:text-primary">الدورات</Link>
               {user ? (
                 <>
+                  {user.role === 'STUDENT' && (
+                    <Link href="/content" className="text-neutral-600 hover:text-primary">المحتوى التعليمي</Link>
+                  )}
                   <Link href={user.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard'} className="text-neutral-600 hover:text-primary">لوحة التحكم</Link>
                   <button onClick={handleLogout} className="text-right text-neutral-600 hover:text-red-500">تسجيل الخروج</button>
                 </>
