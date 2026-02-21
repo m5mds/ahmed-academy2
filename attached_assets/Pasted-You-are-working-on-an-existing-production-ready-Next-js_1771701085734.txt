@@ -1,0 +1,161 @@
+You are working on an existing production ready Next.js 14 application called Ahmed Academy.
+Your task is to implement specific product edits and confirm the system still builds and runs correctly after changes.
+
+Project context.
+
+The platform is a single creator online academy with strict access control.
+There is one creator with full admin authority and two admin accounts.
+Admins and creator have identical permissions.
+
+Core requirements to respect at all times.
+
+Do not break existing authentication.
+Do not weaken content protection.
+Do not introduce public media URLs.
+All access rules must be enforced server side.
+Client side checks are not trusted.
+
+Edits to implement.
+
+Educational content navigation update.
+
+When navigating to Educational Content.
+
+You must display three fixed tabs.
+MID1.
+MID2.
+FINAL.
+
+Each tab must expand into a dropdown list.
+
+Dropdown contents.
+Chapters only.
+Chapter titles are always visible.
+Lessons are nested inside chapters.
+
+Chapters.
+Are admin defined.
+Can be created, edited, deleted.
+Can be reordered.
+Belong to exactly one tier.
+MID1 or MID2 or FINAL.
+
+Lessons.
+Belong to a chapter.
+Inherit the tier from the chapter.
+Still use SectionTag internally.
+
+Lock and unlock system changes.
+
+Admins and creator must be able to lock and unlock content at three levels.
+Tier level.
+Chapter level.
+Lesson level.
+
+Lock scopes.
+Global.
+Affects all students.
+Per student.
+Affects only selected students.
+
+Rules to implement exactly.
+
+Subscription expiry always blocks access.
+Per student unlock overrides global lock.
+Global lock overrides tier entitlement.
+Manual unlock bypasses tier rules but never bypasses expiry.
+
+Student UI behavior.
+Locked items remain visible.
+Locked items are disabled.
+Clicking shows an access restricted message.
+
+Admin UI changes.
+
+Admin dashboard must include.
+
+Chapter management UI.
+Create chapter.
+Edit chapter title.
+Delete chapter.
+Assign tier.
+Reorder chapters.
+Lock or unlock globally.
+Lock or unlock per student.
+
+Lesson management remains unchanged except it now attaches to chapters.
+
+Add lock controls at tier, chapter, and lesson levels.
+
+Backend and database requirements.
+
+You must implement or update models as needed.
+
+Suggested entities.
+Chapter.
+Lesson.
+ContentLock.
+
+ContentLock fields.
+id.
+scope. global or per_student.
+level. tier, chapter, lesson.
+targetId.
+studentId nullable.
+locked boolean.
+createdBy.
+createdAt.
+
+Every lock or unlock action must be logged.
+
+Audit trail requirements.
+Store admin ID.
+Store student ID if applicable.
+Store timestamp.
+Store level and scope.
+
+Access control logic.
+
+When a student requests lesson playback.
+
+The API must execute checks in this exact order.
+
+Validate JWT.
+Check subscription active.
+Check per student unlock.
+Check global lock.
+Check tier entitlement.
+Generate signed Cloudflare Stream JWS URL.
+Expiration set to 3600 seconds.
+
+Do not move this logic to the client.
+
+Build and verification steps.
+
+After implementing changes.
+
+Run the full build.
+Ensure no TypeScript errors.
+Ensure no lint errors.
+Ensure database migrations succeed.
+Ensure existing users can still log in.
+Ensure video playback still works.
+Ensure locked content is enforced correctly.
+Ensure unlocked overrides behave as specified.
+
+Non goals.
+
+Do not add new payment providers.
+Do not change video hosting provider.
+Do not change Zoom integration.
+Do not redesign UI styling beyond what is required.
+
+Final confirmation.
+
+At the end of the task.
+
+Confirm.
+Build passes successfully.
+All edits are implemented.
+No regression in security.
+No regression in content protection.
