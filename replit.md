@@ -1,9 +1,10 @@
 # Arabic Academy (أكاديمية أحمد)
 
 ## Overview
-An Arabic language learning platform built with Next.js 14 (App Router), Prisma ORM with PostgreSQL, and Tailwind CSS. The platform supports RTL layout, JWT authentication, course management, student enrollment, tiered subscription model, multi-level content locking, and an admin dashboard with content management.
+An engineering academy platform built with Next.js 14 (App Router), Prisma ORM with PostgreSQL, and Tailwind CSS. The platform features a Dark-Industrial design system (matte black, safety orange accents, carbon texture backgrounds), RTL layout, JWT authentication, tiered subscription model, multi-level content locking, and an admin dashboard with content management.
 
 ## Recent Changes
+- **Feb 21, 2026**: Applied Dark-Industrial design overhaul. Matte black (#0B0B0B) background, safety orange (#FF4F00) accents, Bebas Neue display font, JetBrains Mono sub-text, carbon texture backgrounds, glassmorphism cards, sharp corners (0 radius). Replaced دورة/دورات with مادة/مواد. Removed certificate features. Updated to engineering academy context.
 - **Feb 21, 2026**: Added multi-level content locking system with Chapter model, ContentLock and LockAudit models. Admin UI for chapter CRUD, tier/chapter/lesson lock controls. Student content page with MID1/MID2/FINAL tabs.
 - **Feb 2026**: Initial setup from GitHub import. Rebuilt missing source files from project documentation. Set up Prisma 7 with PrismaPg adapter, seeded database with sample courses and admin user.
 
@@ -11,9 +12,21 @@ An Arabic language learning platform built with Next.js 14 (App Router), Prisma 
 - **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript
 - **Database**: PostgreSQL (Replit built-in, via Prisma 7 with `@prisma/adapter-pg`)
-- **Styling**: Tailwind CSS with Cairo Arabic font
+- **Styling**: Tailwind CSS with Dark-Industrial theme
+- **Fonts**: Bebas Neue (display/headers), JetBrains Mono (sub-text/mono), Cairo (Arabic body)
 - **Auth**: JWT (jose library) with httpOnly cookies
 - **ORM**: Prisma 7
+
+## Design System — Dark-Industrial
+- **Background**: #0B0B0B (matte black)
+- **Primary/Accent**: #FF4F00 (safety orange)
+- **Card**: #151515
+- **Border**: rgba(255,255,255,0.1)
+- **Display Font**: Bebas Neue (uppercase, tracking-tighter)
+- **Mono Font**: JetBrains Mono
+- **Arabic Font**: Cairo
+- **Border Radius**: 0 (sharp corners)
+- **Effects**: carbon-texture, glass (backdrop blur), text-glow, bokeh-streak, accent-button, sharp-button
 
 ## Project Architecture
 
@@ -23,7 +36,7 @@ app/                    # Next.js App Router pages
   (auth)/               # Auth pages (login, register)
   (student)/            # Student dashboard & content page
   admin/                # Admin dashboard & content management
-  courses/              # Course listing & details
+  courses/              # Material listing & details
   api/                  # API routes
     auth/               # Auth endpoints
     admin/              # Admin APIs (chapters, locks, content, stats)
@@ -32,8 +45,6 @@ app/                    # Next.js App Router pages
     dashboard/          # Dashboard APIs
 components/             # React components
   layout/               # Header, Footer
-  landing/              # Landing page components
-  ui/                   # Reusable UI components
 lib/                    # Utilities
   auth.ts               # JWT sign/verify functions
   auth-server.ts        # Server-side token extraction
@@ -65,7 +76,7 @@ prisma/
 ### Database
 - Uses Replit built-in PostgreSQL
 - Prisma 7 with `@prisma/adapter-pg` (driver adapter pattern)
-- Schema has: users, courses, chapters, lessons, enrollments, lesson_progress, notes, certificates, testimonials, content_locks, lock_audit, payments, attendance, daily_activity, achievements
+- Schema has: users, courses, chapters, lessons, enrollments, lesson_progress, notes, testimonials, content_locks, lock_audit, payments, attendance, daily_activity, achievements
 - Run `npx prisma db push` to sync schema
 - Run `node prisma/seed.ts` to seed
 
@@ -77,11 +88,19 @@ prisma/
 - Course → Chapter (tier-based) → Lesson hierarchy
 - All lock/unlock operations logged in LockAudit table
 
+### Terminology
+- دورة → مادة (Course → Material/Subject)
+- دورات → مواد (Courses → Materials/Subjects)
+- Engineering context: وحدات تقنية (Technical Modules), مخططات (Schematics), هندسة الأنظمة (Systems Engineering)
+
 ### Admin Login
 - Email: admin@ahmedacademy.com
 - Password: adminpassword
 
 ## User Preferences
 - Arabic (RTL) interface
-- Cairo font family
-- Blue primary (#2563EB), Green secondary (#10B981), Amber accent (#F59E0B)
+- Dark-Industrial design system
+- Bebas Neue for display headings, JetBrains Mono for sub-text, Cairo for Arabic body
+- Safety orange primary (#FF4F00)
+- Sharp corners (0 border-radius)
+- Carbon texture backgrounds with glassmorphism cards

@@ -9,6 +9,10 @@ async function getCourse(slug: string) {
     return await prisma.course.findUnique({
       where: { slug },
       include: {
+        chapters: {
+          orderBy: { orderIndex: 'asc' },
+          include: { lessons: { orderBy: { orderIndex: 'asc' } } },
+        },
         lessons: { orderBy: { orderIndex: 'asc' } },
         _count: { select: { enrollments: true } },
       },
@@ -26,22 +30,24 @@ export default async function CourseDetailPage({ params }: { params: { slug: str
   }
 
   return (
-    <div className="py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="py-12 bg-background min-h-screen pt-28 relative">
+      <div className="absolute inset-0 carbon-texture opacity-5 pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-8 text-white mb-8">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-sm bg-white/20 px-3 py-1 rounded-full">
-                  {course.level === 'BEGINNER' ? 'مبتدئ' : course.level === 'INTERMEDIATE' ? 'متوسط' : 'متقدم'}
+            <div className="glass p-8 border-r-4 border-r-primary mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="bg-primary px-3 py-1 font-display text-xs tracking-widest uppercase text-white">
+                  {course.level === 'BEGINNER' ? 'تأسيسي' : course.level === 'INTERMEDIATE' ? 'متقدم' : 'احترافي'}
                 </span>
                 {course.category && (
-                  <span className="text-sm bg-white/20 px-3 py-1 rounded-full">{course.category}</span>
+                  <span className="bg-white/10 px-3 py-1 font-display text-xs tracking-widest uppercase text-white/60">{course.category}</span>
                 )}
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">{course.title}</h1>
-              <p className="text-blue-100 text-lg">{course.shortDescription || course.description}</p>
-              <div className="flex items-center gap-6 mt-6 text-blue-100">
+              <h1 className="font-display text-4xl md:text-5xl text-white tracking-tighter mb-4">{course.title}</h1>
+              <p className="text-white/50 text-base font-mono-text">{course.shortDescription || course.description}</p>
+              <div className="flex items-center gap-6 mt-6 text-white/40 font-display text-sm tracking-widest uppercase">
                 <span>{course._count.enrollments} طالب</span>
                 {course.durationHours && <span>{course.durationHours} ساعة</span>}
                 <span>{course.lessons.length} درس</span>
@@ -49,77 +55,102 @@ export default async function CourseDetailPage({ params }: { params: { slug: str
             </div>
 
             {course.description && (
-              <div className="bg-white rounded-xl border border-neutral-200 p-6 mb-8">
-                <h2 className="text-xl font-bold text-neutral-800 mb-4">وصف الدورة</h2>
-                <p className="text-neutral-600 leading-relaxed whitespace-pre-line">{course.description}</p>
+              <div className="glass p-6 mb-8">
+                <h2 className="font-display text-xl text-white tracking-tighter mb-4 border-b border-white/10 pb-3">وصف المادة</h2>
+                <p className="text-white/50 leading-relaxed whitespace-pre-line font-mono-text text-sm">{course.description}</p>
               </div>
             )}
 
-            <div className="bg-white rounded-xl border border-neutral-200 p-6">
-              <h2 className="text-xl font-bold text-neutral-800 mb-4">محتوى الدورة</h2>
-              {course.lessons.length > 0 ? (
-                <div className="space-y-3">
+            <div className="glass p-6">
+              <h2 className="font-display text-xl text-white tracking-tighter mb-4 border-b border-white/10 pb-3">محتوى المادة</h2>
+              {course.chapters.length > 0 ? (
+                <div className="space-y-4">
+                  {course.chapters.map((chapter) => (
+                    <div key={chapter.id} className="border border-white/5">
+                      <div className="flex items-center gap-3 p-4 bg-white/5">
+                        <div className="w-1 h-6 bg-primary" />
+                        <h3 className="font-display text-lg text-white tracking-tight">{chapter.title}</h3>
+                        <span className="bg-primary/10 text-primary px-2 py-0.5 font-display text-xs tracking-widest uppercase">{chapter.tier}</span>
+                      </div>
+                      <div className="divide-y divide-white/5">
+                        {chapter.lessons.map((lesson, idx) => (
+                          <div key={lesson.id} className="flex items-center justify-between px-6 py-3">
+                            <div className="flex items-center gap-3">
+                              <span className="w-7 h-7 bg-primary/10 text-primary flex items-center justify-center text-xs font-display">{idx + 1}</span>
+                              <span className="text-white/60 text-sm font-mono-text">{lesson.title}</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              {lesson.durationMinutes && (
+                                <span className="text-white/30 text-xs font-mono-text">{lesson.durationMinutes} د</span>
+                              )}
+                              {lesson.isPreview && (
+                                <span className="bg-primary/10 text-primary px-2 py-0.5 text-xs font-display tracking-widest">مجاني</span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : course.lessons.length > 0 ? (
+                <div className="space-y-2">
                   {course.lessons.map((lesson, index) => (
-                    <div
-                      key={lesson.id}
-                      className="flex items-center justify-between p-4 bg-neutral-50 rounded-lg"
-                    >
+                    <div key={lesson.id} className="flex items-center justify-between p-4 border border-white/5 hover:border-primary/20 transition-colors">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center text-sm font-bold">
-                          {index + 1}
-                        </div>
+                        <span className="w-8 h-8 bg-primary/10 text-primary flex items-center justify-center text-sm font-display">{index + 1}</span>
                         <div>
-                          <h3 className="font-medium text-neutral-800">{lesson.title}</h3>
+                          <span className="text-white/70 text-sm font-mono-text">{lesson.title}</span>
                           {lesson.durationMinutes && (
-                            <span className="text-sm text-neutral-400">{lesson.durationMinutes} دقيقة</span>
+                            <span className="text-white/30 text-xs mr-3 font-mono-text">{lesson.durationMinutes} دقيقة</span>
                           )}
                         </div>
                       </div>
                       {lesson.isPreview && (
-                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">مجاني</span>
+                        <span className="bg-primary/10 text-primary px-2 py-0.5 text-xs font-display tracking-widest">مجاني</span>
                       )}
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-neutral-500 text-center py-4">سيتم إضافة الدروس قريباً</p>
+                <p className="text-white/40 text-center py-6 font-mono-text text-sm">سيتم إضافة الدروس قريباً</p>
               )}
             </div>
           </div>
 
           <div className="lg:col-span-1">
-            <div className="sticky top-24 bg-white rounded-xl border border-neutral-200 p-6 shadow-lg">
+            <div className="sticky top-28 glass p-6 border-t-2 border-t-primary">
               <div className="text-center mb-6">
-                <div className="text-3xl font-bold text-neutral-800 mb-1">
+                <div className="font-display text-4xl text-white mb-1">
                   {course.isFree ? 'مجاني' : `${course.price} ر.س`}
                 </div>
               </div>
               <Link
                 href="/login"
-                className="block w-full bg-primary text-white py-3 rounded-lg font-bold text-center hover:bg-blue-700 transition-colors mb-4"
+                className="block w-full accent-button font-display text-lg tracking-widest uppercase py-3 text-white text-center shadow-[0_0_20px_rgba(255,79,0,0.3)] mb-6"
               >
                 سجّل الآن
               </Link>
-              <div className="space-y-3 text-sm text-neutral-500">
-                <div className="flex justify-between">
-                  <span>عدد الدروس</span>
-                  <span className="font-medium text-neutral-700">{course.lessons.length}</span>
+              <div className="space-y-4 text-sm font-mono-text">
+                <div className="flex justify-between border-b border-white/5 pb-3">
+                  <span className="text-white/40">عدد الدروس</span>
+                  <span className="text-white/70">{course.lessons.length}</span>
                 </div>
                 {course.durationHours && (
-                  <div className="flex justify-between">
-                    <span>المدة</span>
-                    <span className="font-medium text-neutral-700">{course.durationHours} ساعة</span>
+                  <div className="flex justify-between border-b border-white/5 pb-3">
+                    <span className="text-white/40">المدة</span>
+                    <span className="text-white/70">{course.durationHours} ساعة</span>
                   </div>
                 )}
-                <div className="flex justify-between">
-                  <span>المستوى</span>
-                  <span className="font-medium text-neutral-700">
-                    {course.level === 'BEGINNER' ? 'مبتدئ' : course.level === 'INTERMEDIATE' ? 'متوسط' : 'متقدم'}
+                <div className="flex justify-between border-b border-white/5 pb-3">
+                  <span className="text-white/40">المستوى</span>
+                  <span className="text-white/70">
+                    {course.level === 'BEGINNER' ? 'تأسيسي' : course.level === 'INTERMEDIATE' ? 'متقدم' : 'احترافي'}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>عدد الطلاب</span>
-                  <span className="font-medium text-neutral-700">{course._count.enrollments}</span>
+                  <span className="text-white/40">عدد الطلاب</span>
+                  <span className="text-white/70">{course._count.enrollments}</span>
                 </div>
               </div>
             </div>

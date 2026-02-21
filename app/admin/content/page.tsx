@@ -35,8 +35,8 @@ interface Lock {
 }
 
 const TIER_LABELS: Record<string, string> = {
-  MID1: 'الفصل الأول',
-  MID2: 'الفصل الثاني',
+  MID1: 'المرحلة الأولى',
+  MID2: 'المرحلة الثانية',
   FINAL: 'الاختبار النهائي',
   FULL: 'وصول كامل',
 }
@@ -157,8 +157,8 @@ export default function AdminContentPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-neutral-500">جاري التحميل...</div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-white/40 font-mono-text">جاري التحميل...</div>
       </div>
     )
   }
@@ -167,14 +167,19 @@ export default function AdminContentPage() {
   const courseChapters = course?.chapters || []
 
   return (
-    <div className="py-12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-neutral-800">إدارة المحتوى التعليمي</h1>
+    <div className="py-12 bg-background min-h-screen pt-28 relative">
+      <div className="absolute inset-0 carbon-texture opacity-5 pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto px-6 md:px-12 relative z-10">
+        <div className="flex items-center justify-between mb-10">
+          <div>
+            <span className="font-display text-primary tracking-[0.4em] uppercase text-sm mb-2 block">مركز التحكم</span>
+            <h1 className="font-display text-4xl md:text-5xl text-white tracking-tighter">إدارة المحتوى التعليمي</h1>
+          </div>
         </div>
 
         {feedback && (
-          <div className="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
+          <div className="mb-4 bg-primary/10 border border-primary/30 text-primary px-4 py-3 text-sm font-mono-text">
             {feedback}
           </div>
         )}
@@ -184,7 +189,7 @@ export default function AdminContentPage() {
             <select
               value={selectedCourse || ''}
               onChange={(e) => setSelectedCourse(e.target.value)}
-              className="w-full md:w-auto px-4 py-2 border border-neutral-300 rounded-lg"
+              className="px-4 py-2 bg-black/50 border border-white/10 text-white font-mono-text text-sm"
             >
               {courses.map((c) => (
                 <option key={c.id} value={c.id}>{c.title}</option>
@@ -193,18 +198,18 @@ export default function AdminContentPage() {
           </div>
         )}
 
-        <div className="mb-6 p-4 bg-white rounded-xl border border-neutral-200">
-          <h2 className="font-bold text-neutral-700 mb-3">قفل حسب المستوى</h2>
-          <div className="flex flex-wrap gap-3">
+        <div className="mb-6 glass p-5 border border-white/10">
+          <h2 className="font-display text-lg text-white tracking-tight mb-4">قفل حسب المستوى</h2>
+          <div className="flex flex-wrap gap-4">
             {(['MID1', 'MID2', 'FINAL'] as const).map((tier) => (
               <div key={tier} className="flex items-center gap-2">
-                <span className="text-sm font-medium">{TIER_LABELS[tier]}</span>
+                <span className="text-sm font-display text-white/60 tracking-widest uppercase">{TIER_LABELS[tier]}</span>
                 <button
                   onClick={() => toggleLock('TIER', tier, !isLocked('TIER', tier))}
-                  className={`px-3 py-1 rounded-lg text-sm font-bold transition-colors ${
+                  className={`px-3 py-1 text-sm font-display tracking-widest uppercase transition-colors ${
                     isLocked('TIER', tier)
-                      ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                      : 'bg-green-100 text-green-700 hover:bg-green-200'
+                      ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                      : 'bg-green-500/20 text-green-400 border border-green-500/30'
                   }`}
                 >
                   {isLocked('TIER', tier) ? 'مقفل' : 'مفتوح'}
@@ -213,58 +218,58 @@ export default function AdminContentPage() {
             ))}
           </div>
 
-          <div className="mt-3 flex items-center gap-2">
+          <div className="mt-4 flex items-center gap-3">
             <input
               type="text"
               placeholder="معرف الطالب (لقفل فردي)"
               value={lockStudentId}
               onChange={(e) => setLockStudentId(e.target.value)}
-              className="px-3 py-1.5 border border-neutral-300 rounded-lg text-sm flex-1 max-w-xs"
+              className="px-3 py-1.5 bg-black/50 border border-white/10 text-white font-mono-text text-xs flex-1 max-w-xs"
               dir="ltr"
             />
-            <span className="text-xs text-neutral-400">استخدم لقفل/فتح فردي</span>
+            <span className="text-xs text-white/30 font-mono-text">استخدم لقفل/فتح فردي</span>
           </div>
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-neutral-800">الفصول</h2>
+          <h2 className="font-display text-2xl text-white tracking-tighter">الفصول</h2>
           <button
             onClick={() => setShowCreateChapter(true)}
-            className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors"
+            className="accent-button font-display text-sm tracking-widest uppercase px-5 py-2 text-white shadow-[0_0_15px_rgba(255,79,0,0.3)]"
           >
             + إضافة فصل
           </button>
         </div>
 
         {showCreateChapter && (
-          <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+          <div className="mb-4 glass p-5 border border-primary/30">
             <div className="flex flex-wrap gap-3 items-end">
               <div className="flex-1 min-w-[200px]">
-                <label className="block text-sm font-medium text-neutral-700 mb-1">عنوان الفصل</label>
+                <label className="block text-xs font-display tracking-widest uppercase text-white/60 mb-2">عنوان الفصل</label>
                 <input
                   type="text"
                   value={newChapterTitle}
                   onChange={(e) => setNewChapterTitle(e.target.value)}
-                  className="w-full px-3 py-2 border border-neutral-300 rounded-lg"
+                  className="w-full px-3 py-2 bg-black/50 border border-white/10 text-white font-mono-text text-sm"
                   placeholder="أدخل عنوان الفصل"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-1">المستوى</label>
+                <label className="block text-xs font-display tracking-widest uppercase text-white/60 mb-2">المستوى</label>
                 <select
                   value={newChapterTier}
                   onChange={(e) => setNewChapterTier(e.target.value)}
-                  className="px-3 py-2 border border-neutral-300 rounded-lg"
+                  className="px-3 py-2 bg-black/50 border border-white/10 text-white font-mono-text text-sm"
                 >
                   <option value="MID1">{TIER_LABELS.MID1}</option>
                   <option value="MID2">{TIER_LABELS.MID2}</option>
                   <option value="FINAL">{TIER_LABELS.FINAL}</option>
                 </select>
               </div>
-              <button onClick={createChapter} className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold">
+              <button onClick={createChapter} className="accent-button font-display text-sm tracking-widest uppercase px-4 py-2 text-white">
                 إنشاء
               </button>
-              <button onClick={() => setShowCreateChapter(false)} className="text-neutral-500 px-4 py-2 text-sm">
+              <button onClick={() => setShowCreateChapter(false)} className="text-white/40 px-4 py-2 text-sm font-display tracking-widest uppercase hover:text-white transition-colors">
                 إلغاء
               </button>
             </div>
@@ -274,7 +279,7 @@ export default function AdminContentPage() {
         <div className="space-y-3">
           {courseChapters.length > 0 ? (
             courseChapters.map((chapter, idx) => (
-              <div key={chapter.id} className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+              <div key={chapter.id} className="bg-black border border-white/10 overflow-hidden">
                 <div className="p-4">
                   {editingChapter === chapter.id ? (
                     <div className="flex flex-wrap gap-3 items-end">
@@ -282,21 +287,21 @@ export default function AdminContentPage() {
                         type="text"
                         value={editTitle}
                         onChange={(e) => setEditTitle(e.target.value)}
-                        className="flex-1 min-w-[200px] px-3 py-2 border border-neutral-300 rounded-lg"
+                        className="flex-1 min-w-[200px] px-3 py-2 bg-black/50 border border-white/10 text-white font-mono-text text-sm"
                       />
                       <select
                         value={editTier}
                         onChange={(e) => setEditTier(e.target.value)}
-                        className="px-3 py-2 border border-neutral-300 rounded-lg"
+                        className="px-3 py-2 bg-black/50 border border-white/10 text-white font-mono-text text-sm"
                       >
                         <option value="MID1">{TIER_LABELS.MID1}</option>
                         <option value="MID2">{TIER_LABELS.MID2}</option>
                         <option value="FINAL">{TIER_LABELS.FINAL}</option>
                       </select>
-                      <button onClick={() => updateChapter(chapter.id)} className="bg-primary text-white px-3 py-2 rounded-lg text-sm font-bold">
+                      <button onClick={() => updateChapter(chapter.id)} className="accent-button font-display text-sm tracking-widest uppercase px-3 py-2 text-white">
                         حفظ
                       </button>
-                      <button onClick={() => setEditingChapter(null)} className="text-neutral-500 px-3 py-2 text-sm">
+                      <button onClick={() => setEditingChapter(null)} className="text-white/40 px-3 py-2 text-sm font-display hover:text-white">
                         إلغاء
                       </button>
                     </div>
@@ -307,7 +312,7 @@ export default function AdminContentPage() {
                           <button
                             onClick={() => moveChapter(courseChapters, idx, -1)}
                             disabled={idx === 0}
-                            className="text-neutral-400 hover:text-neutral-600 disabled:opacity-30"
+                            className="text-white/30 hover:text-primary disabled:opacity-20 transition-colors"
                           >
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
@@ -316,25 +321,26 @@ export default function AdminContentPage() {
                           <button
                             onClick={() => moveChapter(courseChapters, idx, 1)}
                             disabled={idx === courseChapters.length - 1}
-                            className="text-neutral-400 hover:text-neutral-600 disabled:opacity-30"
+                            className="text-white/30 hover:text-primary disabled:opacity-20 transition-colors"
                           >
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>
                           </button>
                         </div>
+                        <div className="w-1 h-8 bg-primary" />
                         <div>
-                          <h3 className="font-bold text-neutral-800">{chapter.title}</h3>
-                          <span className="text-xs text-neutral-400">{TIER_LABELS[chapter.tier]} - {chapter.lessons.length} درس</span>
+                          <h3 className="font-display text-lg text-white tracking-tight">{chapter.title}</h3>
+                          <span className="text-xs text-white/30 font-mono-text">{TIER_LABELS[chapter.tier]} - {chapter.lessons.length} درس</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => toggleLock('CHAPTER', chapter.id, !isLocked('CHAPTER', chapter.id))}
-                          className={`px-2 py-1 rounded text-xs font-bold ${
+                          className={`px-2 py-1 text-xs font-display tracking-widest uppercase ${
                             isLocked('CHAPTER', chapter.id)
-                              ? 'bg-red-100 text-red-700'
-                              : 'bg-green-100 text-green-700'
+                              ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                              : 'bg-green-500/20 text-green-400 border border-green-500/30'
                           }`}
                         >
                           {isLocked('CHAPTER', chapter.id) ? 'مقفل' : 'مفتوح'}
@@ -342,7 +348,7 @@ export default function AdminContentPage() {
                         {lockStudentId && (
                           <button
                             onClick={() => toggleLock('CHAPTER', chapter.id, true, 'PER_STUDENT', lockStudentId)}
-                            className="px-2 py-1 rounded text-xs font-bold bg-orange-100 text-orange-700"
+                            className="px-2 py-1 text-xs font-display tracking-widest uppercase bg-amber-500/20 text-amber-400 border border-amber-500/30"
                           >
                             قفل فردي
                           </button>
@@ -353,7 +359,7 @@ export default function AdminContentPage() {
                             setEditTitle(chapter.title)
                             setEditTier(chapter.tier)
                           }}
-                          className="text-neutral-400 hover:text-primary"
+                          className="text-white/30 hover:text-primary transition-colors p-1"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -361,7 +367,7 @@ export default function AdminContentPage() {
                         </button>
                         <button
                           onClick={() => deleteChapter(chapter.id)}
-                          className="text-neutral-400 hover:text-red-500"
+                          className="text-white/30 hover:text-red-500 transition-colors p-1"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -373,20 +379,20 @@ export default function AdminContentPage() {
                 </div>
 
                 {chapter.lessons.length > 0 && (
-                  <div className="border-t border-neutral-100">
+                  <div className="border-t border-white/5">
                     {chapter.lessons.map((lesson) => (
-                      <div key={lesson.id} className="flex items-center justify-between px-6 py-2 border-b border-neutral-50 last:border-b-0">
-                        <span className="text-sm text-neutral-600">{lesson.title}</span>
+                      <div key={lesson.id} className="flex items-center justify-between px-6 py-2 border-b border-white/5 last:border-b-0">
+                        <span className="text-sm text-white/50 font-mono-text">{lesson.title}</span>
                         <div className="flex items-center gap-2">
                           {lesson.durationMinutes && (
-                            <span className="text-xs text-neutral-400">{lesson.durationMinutes} د</span>
+                            <span className="text-xs text-white/30 font-mono-text">{lesson.durationMinutes} د</span>
                           )}
                           <button
                             onClick={() => toggleLock('LESSON', lesson.id, !isLocked('LESSON', lesson.id))}
-                            className={`px-2 py-0.5 rounded text-xs font-bold ${
+                            className={`px-2 py-0.5 text-xs font-display tracking-widest ${
                               isLocked('LESSON', lesson.id)
-                                ? 'bg-red-100 text-red-700'
-                                : 'bg-green-100 text-green-700'
+                                ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                                : 'bg-green-500/20 text-green-400 border border-green-500/30'
                             }`}
                           >
                             {isLocked('LESSON', lesson.id) ? 'مقفل' : 'مفتوح'}
@@ -399,9 +405,9 @@ export default function AdminContentPage() {
               </div>
             ))
           ) : (
-            <div className="text-center py-12 bg-neutral-50 rounded-xl">
-              <p className="text-4xl mb-4">📖</p>
-              <p className="text-neutral-500">لا توجد فصول بعد. أضف فصلاً جديداً</p>
+            <div className="text-center py-16 glass">
+              <p className="text-5xl mb-6 opacity-30">&#9881;</p>
+              <p className="text-white/40 font-display tracking-widest uppercase">لا توجد فصول بعد. أضف فصلاً جديداً</p>
             </div>
           )}
         </div>

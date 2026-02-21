@@ -19,56 +19,67 @@ export default async function CoursesPage() {
   const courses = await getCourses()
 
   return (
-    <div className="py-12 md:py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4">جميع الدورات</h1>
-          <p className="text-neutral-500 text-lg">اكتشف دوراتنا التعليمية واختر المناسب لك</p>
+    <div className="py-12 md:py-16 bg-background min-h-screen pt-28 relative">
+      <div className="absolute inset-0 carbon-texture opacity-5 pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+        <div className="mb-16">
+          <span className="font-display text-primary tracking-[0.4em] uppercase text-sm mb-4 block">المنهج التعليمي</span>
+          <h1 className="font-display text-5xl md:text-7xl text-white tracking-tighter leading-none mb-4">
+            جميع <span className="text-glow">المواد</span>
+          </h1>
+          <p className="text-white/40 font-mono-text text-sm tracking-wide">اكتشف الوحدات التقنية واختر المسار المناسب لك</p>
+          <div className="w-32 h-[2px] bg-primary mt-6 shadow-[0_0_10px_rgba(255,79,0,0.8)]" />
         </div>
 
         {courses.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {courses.map((course) => (
               <Link
                 key={course.id}
                 href={`/courses/${course.slug}`}
-                className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden group border border-neutral-100"
+                className="group relative bg-black border border-white/10 p-4 transition-all duration-500 hover:border-primary/50"
               >
-                <div className="h-48 bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
-                  <span className="text-6xl text-white/30">📚</span>
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                      {course.level === 'BEGINNER' ? 'مبتدئ' : course.level === 'INTERMEDIATE' ? 'متوسط' : 'متقدم'}
+                <div className="relative aspect-video overflow-hidden mb-6 bg-gradient-to-br from-primary/20 to-black flex items-center justify-center">
+                  <span className="text-6xl opacity-20 group-hover:opacity-40 transition-opacity">&#9881;</span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                  <div className="absolute bottom-3 right-3 flex gap-2">
+                    <span className="bg-primary px-3 py-1 font-display text-xs tracking-widest uppercase text-white">
+                      {course.level === 'BEGINNER' ? 'تأسيسي' : course.level === 'INTERMEDIATE' ? 'متقدم' : 'احترافي'}
                     </span>
                     {course.isFree && (
-                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">مجاني</span>
+                      <span className="bg-white/10 backdrop-blur-md px-3 py-1 font-display text-xs tracking-widest uppercase text-white">مجاني</span>
                     )}
                   </div>
-                  <h3 className="font-bold text-lg text-neutral-800 mb-2 group-hover:text-primary transition-colors">
+                </div>
+
+                <div className="space-y-3 px-2">
+                  <h3 className="font-display text-2xl md:text-3xl text-white tracking-tighter group-hover:text-primary transition-colors">
                     {course.title}
                   </h3>
-                  <p className="text-neutral-500 text-sm mb-4 line-clamp-2">
-                    {course.shortDescription || course.description || 'دورة تعليمية متميزة'}
+                  <p className="text-white/40 text-sm leading-relaxed font-mono-text">
+                    {course.shortDescription || course.description || 'وحدة تعليمية تقنية متقدمة'}
                   </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-neutral-400">
+                  <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                    <span className="text-white/40 font-display text-xs tracking-widest uppercase">
                       {course._count.enrollments} طالب
                     </span>
-                    <span className="font-bold text-primary">
+                    <span className="font-display text-lg text-white/40 italic">
                       {course.isFree ? 'مجاني' : `${course.price} ر.س`}
                     </span>
                   </div>
                 </div>
+
+                <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-transparent group-hover:border-primary/50 transition-colors" />
+                <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-transparent group-hover:border-primary/50 transition-colors" />
               </Link>
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 bg-neutral-50 rounded-xl">
-            <p className="text-6xl mb-4">📚</p>
-            <h2 className="text-xl font-bold text-neutral-700 mb-2">لا توجد دورات حالياً</h2>
-            <p className="text-neutral-500">سيتم إضافة دورات جديدة قريباً</p>
+          <div className="text-center py-20 glass">
+            <p className="text-5xl mb-6 opacity-30">&#9881;</p>
+            <h2 className="font-display text-2xl text-white tracking-tighter uppercase mb-2">لا توجد مواد حالياً</h2>
+            <p className="text-white/40 font-mono-text text-sm">سيتم إضافة وحدات تقنية جديدة قريباً</p>
           </div>
         )}
       </div>

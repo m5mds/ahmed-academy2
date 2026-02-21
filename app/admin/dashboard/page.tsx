@@ -23,57 +23,62 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-neutral-500">جاري التحميل...</div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-white/40 font-mono-text">جاري التحميل...</div>
       </div>
     )
   }
 
   return (
-    <div className="py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-neutral-800 mb-8">لوحة تحكم المدير</h1>
+    <div className="py-12 bg-background min-h-screen pt-28 relative">
+      <div className="absolute inset-0 carbon-texture opacity-5 pointer-events-none" />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-xl border border-neutral-200 p-6">
-            <div className="text-3xl font-bold text-primary">{stats?.totalUsers || 0}</div>
-            <div className="text-neutral-500 mt-1">إجمالي المستخدمين</div>
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+        <div className="mb-10">
+          <span className="font-display text-primary tracking-[0.4em] uppercase text-sm mb-2 block">مركز القيادة</span>
+          <h1 className="font-display text-4xl md:text-5xl text-white tracking-tighter">لوحة تحكم المدير</h1>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <div className="glass p-6 border-r-2 border-r-primary">
+            <div className="font-display text-4xl text-primary">{stats?.totalUsers || 0}</div>
+            <div className="text-white/40 mt-1 font-display text-sm tracking-widest uppercase">إجمالي المستخدمين</div>
           </div>
-          <div className="bg-white rounded-xl border border-neutral-200 p-6">
-            <div className="text-3xl font-bold text-secondary">{stats?.totalCourses || 0}</div>
-            <div className="text-neutral-500 mt-1">إجمالي الدورات</div>
+          <div className="glass p-6 border-r-2 border-r-green-500">
+            <div className="font-display text-4xl text-green-500">{stats?.totalCourses || 0}</div>
+            <div className="text-white/40 mt-1 font-display text-sm tracking-widest uppercase">إجمالي المواد</div>
           </div>
-          <div className="bg-white rounded-xl border border-neutral-200 p-6">
-            <div className="text-3xl font-bold text-accent">{stats?.totalEnrollments || 0}</div>
-            <div className="text-neutral-500 mt-1">إجمالي التسجيلات</div>
+          <div className="glass p-6 border-r-2 border-r-amber-500">
+            <div className="font-display text-4xl text-amber-500">{stats?.totalEnrollments || 0}</div>
+            <div className="text-white/40 mt-1 font-display text-sm tracking-widest uppercase">إجمالي التسجيلات</div>
           </div>
         </div>
 
-        <h2 className="text-xl font-bold text-neutral-800 mb-4">إدارة المنصة</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <h2 className="font-display text-2xl text-white tracking-tighter mb-6">إدارة المنصة</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Link
             href="/admin/content"
-            className="bg-white rounded-xl border border-neutral-200 p-6 hover:shadow-md transition-shadow group"
+            className="group glass p-6 hover:border-primary/50 transition-all duration-500 border border-white/10"
           >
-            <div className="text-3xl mb-3">📚</div>
-            <h3 className="font-bold text-neutral-800 group-hover:text-primary transition-colors">إدارة المحتوى</h3>
-            <p className="text-sm text-neutral-500 mt-1">الفصول والدروس وأقفال المحتوى</p>
+            <div className="text-3xl mb-3 text-primary">&#9881;</div>
+            <h3 className="font-display text-xl text-white tracking-tight group-hover:text-primary transition-colors">إدارة المحتوى</h3>
+            <p className="text-sm text-white/40 mt-1 font-mono-text">الفصول والدروس وأقفال المحتوى</p>
           </Link>
           <Link
             href="/admin/content"
-            className="bg-white rounded-xl border border-neutral-200 p-6 hover:shadow-md transition-shadow group"
+            className="group glass p-6 hover:border-primary/50 transition-all duration-500 border border-white/10"
           >
-            <div className="text-3xl mb-3">🔒</div>
-            <h3 className="font-bold text-neutral-800 group-hover:text-primary transition-colors">التحكم بالأقفال</h3>
-            <p className="text-sm text-neutral-500 mt-1">قفل وفتح المحتوى على مستوى الفصول والدروس</p>
+            <div className="text-3xl mb-3 text-primary">&#128274;</div>
+            <h3 className="font-display text-xl text-white tracking-tight group-hover:text-primary transition-colors">التحكم بالأقفال</h3>
+            <p className="text-sm text-white/40 mt-1 font-mono-text">قفل وفتح المحتوى على مستوى الفصول والدروس</p>
           </Link>
           <Link
             href="/courses"
-            className="bg-white rounded-xl border border-neutral-200 p-6 hover:shadow-md transition-shadow group"
+            className="group glass p-6 hover:border-primary/50 transition-all duration-500 border border-white/10"
           >
-            <div className="text-3xl mb-3">🎓</div>
-            <h3 className="font-bold text-neutral-800 group-hover:text-primary transition-colors">الدورات</h3>
-            <p className="text-sm text-neutral-500 mt-1">عرض وإدارة الدورات المتاحة</p>
+            <div className="text-3xl mb-3 text-primary">&#128218;</div>
+            <h3 className="font-display text-xl text-white tracking-tight group-hover:text-primary transition-colors">المواد</h3>
+            <p className="text-sm text-white/40 mt-1 font-mono-text">عرض وإدارة المواد المتاحة</p>
           </Link>
         </div>
       </div>

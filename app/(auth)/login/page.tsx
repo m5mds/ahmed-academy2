@@ -35,44 +35,47 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-lg p-8 border border-neutral-100">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-background relative pt-24">
+      <div className="absolute inset-0 carbon-texture opacity-5 pointer-events-none" />
+      <div className="bokeh-streak top-1/3 -left-20 rotate-12" />
+
+      <div className="w-full max-w-md relative z-10">
+        <div className="glass p-8 border border-white/10">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center mx-auto mb-4">
-              <span className="text-white font-bold text-3xl">أ</span>
+            <div className="w-14 h-14 bg-primary rotate-45 flex items-center justify-center mx-auto mb-6">
+              <span className="font-display text-white -rotate-45 text-2xl">A</span>
             </div>
-            <h1 className="text-2xl font-bold text-neutral-800">تسجيل الدخول</h1>
-            <p className="text-neutral-500 mt-2">أهلاً بعودتك! سجّل دخولك لمتابعة التعلم</p>
+            <h1 className="font-display text-3xl text-white tracking-tighter uppercase">تسجيل الدخول</h1>
+            <p className="text-white/40 mt-2 font-mono-text text-sm">أهلاً بعودتك! سجّل دخولك لمتابعة التعلم</p>
           </div>
 
           {error && (
-            <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm text-center">
+            <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 mb-4 text-sm text-center font-mono-text">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">البريد الإلكتروني</label>
+              <label className="block text-sm font-display tracking-widest uppercase text-white/60 mb-2">البريد الإلكتروني</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 bg-black/50 border border-white/10 text-white font-mono-text text-sm focus:border-primary outline-none transition-all"
                 placeholder="example@email.com"
                 dir="ltr"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">كلمة المرور</label>
+              <label className="block text-sm font-display tracking-widest uppercase text-white/60 mb-2">كلمة المرور</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 bg-black/50 border border-white/10 text-white font-mono-text text-sm focus:border-primary outline-none transition-all"
                 placeholder="••••••••"
                 dir="ltr"
               />
@@ -80,15 +83,15 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors disabled:opacity-50"
+              className="w-full accent-button font-display text-lg tracking-widest uppercase py-3 text-white disabled:opacity-50 shadow-[0_0_20px_rgba(255,79,0,0.3)]"
             >
               {loading ? 'جاري التحميل...' : 'تسجيل الدخول'}
             </button>
           </form>
 
-          <p className="text-center mt-6 text-neutral-500 text-sm">
+          <p className="text-center mt-6 text-white/40 text-sm font-mono-text">
             ليس لديك حساب؟{' '}
-            <Link href="/register" className="text-primary font-medium hover:underline">
+            <Link href="/register" className="text-primary hover:underline">
               إنشاء حساب جديد
             </Link>
           </p>
