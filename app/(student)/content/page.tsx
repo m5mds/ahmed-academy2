@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { api } from '@/lib/api'
+import { Lock, ChevronDown, BookOpen, Clock } from 'lucide-react'
 
 interface LessonItem {
   id: string
@@ -42,18 +43,6 @@ const TIER_LABELS: Record<string, string> = {
   MID1: 'المرحلة الأولى',
   MID2: 'المرحلة الثانية',
   FINAL: 'الاختبار النهائي',
-}
-
-const TIER_COLORS: Record<string, string> = {
-  MID1: 'border-l-blue-500',
-  MID2: 'border-l-green-500',
-  FINAL: 'border-l-amber-500',
-}
-
-const TIER_BG: Record<string, string> = {
-  MID1: 'bg-blue-500',
-  MID2: 'bg-green-500',
-  FINAL: 'bg-amber-500',
 }
 
 export default function ContentPage() {
@@ -100,19 +89,19 @@ export default function ContentPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-white/40 font-mono-text">جاري التحميل...</div>
+      <div className="min-h-screen flex items-center justify-center bg-[#F3F4F6]">
+        <div className="text-gray-400 font-mono-text text-sm">جاري التحميل...</div>
       </div>
     )
   }
 
   if (!data?.enrollment) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background pt-24">
-        <div className="text-center glass p-12">
-          <p className="text-5xl mb-6 opacity-30">&#9881;</p>
-          <p className="text-white/50 text-lg font-display tracking-widest uppercase">لم تسجل في أي مادة بعد</p>
-          <a href="/courses" className="text-primary hover:underline mt-4 inline-block font-display tracking-widest uppercase text-sm">تصفح المواد المتاحة</a>
+      <div className="min-h-screen flex items-center justify-center bg-[#F3F4F6] pt-24">
+        <div className="text-center bg-white p-12 border border-gray-200">
+          <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+          <p className="text-gray-500 text-lg mb-4">لم تسجل في أي مادة بعد</p>
+          <a href="/courses" className="text-[#1A2B4C] font-semibold hover:underline text-sm">تصفح المواد الدراسية المتاحة</a>
         </div>
       </div>
     )
@@ -122,13 +111,11 @@ export default function ContentPage() {
   const chapters = data?.grouped?.[activeTab] || []
 
   return (
-    <div className="py-12 bg-background min-h-screen pt-28 relative">
-      <div className="absolute inset-0 carbon-texture opacity-5 pointer-events-none" />
-
-      <div className="max-w-4xl mx-auto px-6 md:px-12 relative z-10">
+    <div className="min-h-screen bg-[#F3F4F6] pt-24 pb-12">
+      <div className="max-w-4xl mx-auto px-6 md:px-12">
         <div className="mb-8">
-          <span className="font-display text-primary tracking-[0.4em] uppercase text-sm mb-2 block">الوحدات التقنية</span>
-          <h1 className="font-display text-4xl md:text-5xl text-white tracking-tighter">المحتوى التعليمي</h1>
+          <h1 className="font-display text-4xl text-[#1A2B4C] tracking-tight">المحتوى التعليمي</h1>
+          <p className="text-gray-500 text-sm mt-1">الوحدات والفصول الدراسية</p>
         </div>
 
         {data.courses && data.courses.length > 1 && (
@@ -136,7 +123,7 @@ export default function ContentPage() {
             <select
               value={selectedCourseId || ''}
               onChange={(e) => setSelectedCourseId(e.target.value)}
-              className="px-4 py-2 bg-black/50 border border-white/10 text-white font-mono-text text-sm"
+              className="px-4 py-2 border border-gray-200 text-[#1A2B4C] text-sm bg-white"
             >
               {data.courses.map((c) => (
                 <option key={c.id} value={c.id}>{c.title}</option>
@@ -145,12 +132,12 @@ export default function ContentPage() {
           </div>
         )}
 
-        <p className="text-white/40 mb-6 font-mono-text text-sm">
-          اشتراكك: <span className="text-primary font-bold">{TIER_LABELS[data.enrollment.tier] || data.enrollment.tier}</span>
+        <p className="text-gray-500 mb-6 text-sm">
+          اشتراكك: <span className="text-[#1A2B4C] font-bold">{TIER_LABELS[data.enrollment.tier] || data.enrollment.tier}</span>
         </p>
 
         {accessMessage && (
-          <div className="mb-4 bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 text-sm font-mono-text">
+          <div className="mb-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 text-sm">
             {accessMessage}
           </div>
         )}
@@ -160,10 +147,10 @@ export default function ContentPage() {
             <button
               key={tier}
               onClick={() => setActiveTab(tier)}
-              className={`flex-1 py-3 px-4 font-display text-sm tracking-widest uppercase text-center transition-all border ${
+              className={`flex-1 py-3 px-4 text-sm text-center transition-all border ${
                 activeTab === tier
-                  ? `${TIER_BG[tier]} text-white border-transparent shadow-lg`
-                  : 'bg-black/50 text-white/50 border-white/10 hover:border-white/30'
+                  ? 'bg-[#1A2B4C] text-white border-[#1A2B4C]'
+                  : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'
               }`}
             >
               {TIER_LABELS[tier]}
@@ -174,59 +161,46 @@ export default function ContentPage() {
         {chapters.length > 0 ? (
           <div className="space-y-3">
             {chapters.map((chapter) => (
-              <div key={chapter.id} className={`bg-black border border-white/10 overflow-hidden ${TIER_COLORS[chapter.tier]} border-l-2`}>
+              <div key={chapter.id} className="bg-white border border-gray-200 overflow-hidden">
                 <button
                   onClick={() => toggleChapter(chapter.id)}
-                  className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors"
+                  className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <h3 className="font-display text-lg text-white tracking-tight">{chapter.title}</h3>
-                    <span className="text-xs text-white/30 font-mono-text">({chapter.lessons.length} درس)</span>
+                    <h3 className="font-display text-lg text-[#1A2B4C]">{chapter.title}</h3>
+                    <span className="text-xs text-gray-400 font-mono-text">({chapter.lessons.length} درس)</span>
                   </div>
-                  <svg
-                    className={`w-5 h-5 text-white/30 transition-transform ${
-                      expandedChapters.has(chapter.id) ? 'rotate-180' : ''
-                    }`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${expandedChapters.has(chapter.id) ? 'rotate-180' : ''}`} />
                 </button>
 
                 {expandedChapters.has(chapter.id) && (
-                  <div className="border-t border-white/5">
+                  <div className="border-t border-gray-100">
                     {chapter.lessons.map((lesson, idx) => (
                       <div
                         key={lesson.id}
                         onClick={() => lesson.locked ? handleLockedClick(lesson.lockReason) : undefined}
                         className={`flex items-center justify-between px-6 py-3 ${
-                          idx > 0 ? 'border-t border-white/5' : ''
-                        } ${lesson.locked ? 'opacity-40 cursor-not-allowed' : 'hover:bg-white/5 cursor-pointer'}`}
+                          idx > 0 ? 'border-t border-gray-50' : ''
+                        } ${lesson.locked ? 'opacity-40 cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'}`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className={`w-7 h-7 flex items-center justify-center text-xs font-display ${
-                            lesson.locked ? 'bg-white/10 text-white/30' : 'bg-primary/10 text-primary'
+                          <div className={`w-7 h-7 flex items-center justify-center text-xs ${
+                            lesson.locked ? 'bg-gray-100 text-gray-400' : 'bg-blue-50 text-[#1A2B4C]'
                           }`}>
-                            {lesson.locked ? (
-                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                              </svg>
-                            ) : (
-                              idx + 1
-                            )}
+                            {lesson.locked ? <Lock className="w-3.5 h-3.5" /> : idx + 1}
                           </div>
-                          <span className={`text-sm font-mono-text ${lesson.locked ? 'text-white/30' : 'text-white/70'}`}>
+                          <span className={`text-sm ${lesson.locked ? 'text-gray-400' : 'text-gray-700'}`}>
                             {lesson.title}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           {lesson.isPreview && !lesson.locked && (
-                            <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 font-display tracking-widest">مجاني</span>
+                            <span className="text-xs bg-emerald-50 text-emerald-600 px-2 py-0.5">مجاني</span>
                           )}
                           {lesson.durationMinutes && (
-                            <span className="text-xs text-white/30 font-mono-text">{lesson.durationMinutes} د</span>
+                            <span className="text-xs text-gray-400 flex items-center gap-1">
+                              <Clock className="w-3 h-3" /> {lesson.durationMinutes} د
+                            </span>
                           )}
                         </div>
                       </div>
@@ -237,9 +211,9 @@ export default function ContentPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 glass">
-            <p className="text-5xl mb-6 opacity-30">&#9881;</p>
-            <p className="text-white/40 font-display tracking-widest uppercase">لا يوجد محتوى في هذا القسم</p>
+          <div className="text-center py-16 bg-white border border-gray-200">
+            <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-400">لا يوجد محتوى في هذا القسم</p>
           </div>
         )}
       </div>

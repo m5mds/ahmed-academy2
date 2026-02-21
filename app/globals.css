@@ -33,39 +33,6 @@ body {
   background-size: 30px 30px;
 }
 
-.glass {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
-}
-
-.accent-button {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--primary);
-  background-color: var(--primary);
-  color: #fff;
-  transition: all 0.3s;
-}
-
-.accent-button:hover {
-  background-color: transparent;
-  color: var(--primary);
-}
-
-.sharp-button {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  background-color: transparent;
-  color: var(--foreground);
-  transition: all 0.3s;
-}
-
-.sharp-button:hover {
-  background-color: var(--muted);
-}
 
 @keyframes spin-slow {
   from { transform: rotate(0deg); }

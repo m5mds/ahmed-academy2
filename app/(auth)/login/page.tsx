@@ -35,47 +35,44 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-background relative pt-24">
-      <div className="absolute inset-0 carbon-texture opacity-5 pointer-events-none" />
-      <div className="bokeh-streak top-1/3 -left-20 rotate-12" />
-
-      <div className="w-full max-w-md relative z-10">
-        <div className="glass p-8 border border-white/10">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-[#F3F4F6] pt-24">
+      <div className="w-full max-w-md">
+        <div className="bg-white p-8 border border-gray-200">
           <div className="text-center mb-8">
-            <div className="w-14 h-14 bg-primary rotate-45 flex items-center justify-center mx-auto mb-6">
-              <span className="font-display text-white -rotate-45 text-2xl">A</span>
+            <div className="w-14 h-14 bg-[#1A2B4C] flex items-center justify-center mx-auto mb-6">
+              <span className="font-display text-white text-2xl">A</span>
             </div>
-            <h1 className="font-display text-3xl text-white tracking-tighter uppercase">تسجيل الدخول</h1>
-            <p className="text-white/40 mt-2 font-mono-text text-sm">أهلاً بعودتك! سجّل دخولك لمتابعة التعلم</p>
+            <h1 className="font-display text-3xl text-[#1A2B4C]">تسجيل الدخول</h1>
+            <p className="text-gray-500 mt-2 text-sm">أهلاً بعودتك! سجّل دخولك لمتابعة التعلم</p>
           </div>
 
           {error && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 mb-4 text-sm text-center font-mono-text">
+            <div className="bg-red-50 border border-red-200 text-red-600 p-3 mb-4 text-sm text-center">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-display tracking-widest uppercase text-white/60 mb-2">البريد الإلكتروني</label>
+              <label className="block text-sm text-gray-600 mb-2">البريد الإلكتروني</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-black/50 border border-white/10 text-white font-mono-text text-sm focus:border-primary outline-none transition-all"
+                className="w-full px-4 py-3 border border-gray-200 text-[#1A2B4C] text-sm focus:border-[#1A2B4C] outline-none transition-all"
                 placeholder="example@email.com"
                 dir="ltr"
               />
             </div>
             <div>
-              <label className="block text-sm font-display tracking-widest uppercase text-white/60 mb-2">كلمة المرور</label>
+              <label className="block text-sm text-gray-600 mb-2">كلمة المرور</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-black/50 border border-white/10 text-white font-mono-text text-sm focus:border-primary outline-none transition-all"
+                className="w-full px-4 py-3 border border-gray-200 text-[#1A2B4C] text-sm focus:border-[#1A2B4C] outline-none transition-all"
                 placeholder="••••••••"
                 dir="ltr"
               />
@@ -83,15 +80,15 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full accent-button font-display text-lg tracking-widest uppercase py-3 text-white disabled:opacity-50 shadow-[0_0_20px_rgba(255,79,0,0.3)]"
+              className="w-full bg-[#1A2B4C] text-lg py-3 text-white disabled:opacity-50 hover:bg-[#1A2B4C]/90 transition-colors"
             >
               {loading ? 'جاري التحميل...' : 'تسجيل الدخول'}
             </button>
           </form>
 
-          <p className="text-center mt-6 text-white/40 text-sm font-mono-text">
+          <p className="text-center mt-6 text-gray-500 text-sm">
             ليس لديك حساب؟{' '}
-            <Link href="/register" className="text-primary hover:underline">
+            <Link href="/register" className="text-[#1A2B4C] font-semibold hover:underline">
               إنشاء حساب جديد
             </Link>
           </p>

@@ -4,25 +4,32 @@
 A formal Engineering Academy platform built with Next.js 14 (App Router), Prisma ORM with PostgreSQL, and Tailwind CSS. The platform features a Professional Academic design system (Light Mode, Navy Blue #1A2B4C headings, textbook-style UI, technical blueprint graphics), RTL layout, JWT authentication, tiered subscription model, and multi-level content locking.
 
 ## Recent Changes
-- **Feb 21, 2026**: Transitioned to professional Light-Mode Academic UI. Replaced Dark-Industrial theme with Navy Blue (#1A2B4C) and White palette. Refactored Hero to a formal split-layout with technical blueprints.
-- **Feb 21, 2026**: Refined all content to remove marketing slogans. Updated terminology to formal academic headers (e.g., 'أكاديمية أحمد للعلوم الهندسية المتقدمة'). Removed all certificate references.
-- **Feb 21, 2026**: Restructured materials section by engineering sub-disciplines (Mechanical, Electrical, Civil) with a textbook-style grid layout.
-- **Feb 21, 2026**: Cleaned up project dependencies and removed conflicting pages/ directory.
+- **Feb 21, 2026**: Complete UI overhaul to Professional Light-Mode Academic theme. White cards (#FFFFFF), Navy Blue (#1A2B4C) headings, Light Grey (#F3F4F6) dashboard backgrounds. Removed ALL glows, shadows, carbon textures, and dark-mode remnants.
+- **Feb 21, 2026**: Conditional header navigation: Shows Dashboard/Logout when logged in, Login/Register when logged out. White navbar with subtle shadow.
+- **Feb 21, 2026**: Replaced all emoji icons with professional lucide-react icons (Users, BookOpen, Lock, Settings, etc.).
+- **Feb 21, 2026**: Admin route protection: /admin routes redirect to home if user is not authenticated as admin.
+- **Feb 21, 2026**: Full terminology scrub: 100% replaced دورة→مادة across all files including seed data. Removed all certificate references.
+- **Feb 21, 2026**: Dynamic course categories on courses page (derived from DB data, not hardcoded English).
 
 ## Tech Stack
 - **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript
 - **Database**: PostgreSQL (Replit built-in)
 - **Styling**: Tailwind CSS (Academic Light Theme)
+- **Icons**: lucide-react
 - **Fonts**: Cairo (Arabic body), Bebas Neue (Headers), JetBrains Mono (Technical)
 
-## Design System — Professional Academic
-- **Background**: #FFFFFF (White)
+## Design System — Professional Academic (Light Mode)
+- **Background (Landing)**: #FFFFFF (White)
+- **Background (Dashboard)**: #F3F4F6 (Light Grey)
+- **Cards**: #FFFFFF with border #E5E7EB
 - **Primary/Heading**: #1A2B4C (Navy Blue)
 - **Accent**: #FF4F00 (Safety Orange - minimal use)
 - **Border**: #E5E7EB (Light Grey)
-- **Layout**: Split Hero, Bordered Grid, RTL support
-- **Terminology**: مادة (Material), منهج (Curriculum), استفسار أكاديمي (Academic Inquiry)
+- **Text**: #1A2B4C (headings), #6B7280 (body), #9CA3AF (muted)
+- **Layout**: Split Hero (RTL), Bordered Grid, Clean Forms
+- **Icons**: lucide-react (Users, BookOpen, Lock, Settings, etc.)
+- **NO**: Glows, shadows, carbon textures, glassmorphism, dark backgrounds
 
 ## Project Architecture
 
@@ -33,14 +40,16 @@ app/                    # Next.js App Router pages
   (student)/            # Student dashboard & content page
   admin/                # Admin dashboard & content management
   courses/              # Material listing & details
+  contact/              # Contact page
   api/                  # API routes
-    auth/               # Auth endpoints
+    auth/               # Auth endpoints (login, register, logout, me)
     admin/              # Admin APIs (chapters, locks, content, stats)
     content/            # Student content APIs (chapters, video)
     courses/            # Course APIs
     dashboard/          # Dashboard APIs
 components/             # React components
   layout/               # Header, Footer
+  ui/                   # ScrollReveal, AnimatedCounter
 lib/                    # Utilities
   auth.ts               # JWT sign/verify functions
   auth-server.ts        # Server-side token extraction
@@ -95,8 +104,8 @@ prisma/
 
 ## User Preferences
 - Arabic (RTL) interface
-- Dark-Industrial design system
+- Professional Light-Mode Academic design
 - Bebas Neue for display headings, JetBrains Mono for sub-text, Cairo for Arabic body
-- Safety orange primary (#FF4F00)
-- Sharp corners (0 border-radius)
-- Carbon texture backgrounds with glassmorphism cards
+- Navy Blue primary (#1A2B4C), Safety Orange accent (#FF4F00 - minimal)
+- Clean borders, no glows or shadows
+- Institutional clarity, formal academic language throughout

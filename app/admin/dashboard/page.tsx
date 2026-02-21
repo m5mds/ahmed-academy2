@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { api } from '@/lib/api'
+import { Users, BookOpen, UserCheck, Settings, Lock, FileText } from 'lucide-react'
 
 interface AdminStats {
   totalUsers: number
@@ -13,72 +15,88 @@ interface AdminStats {
 export default function AdminDashboard() {
   const [stats, setStats] = useState<AdminStats | null>(null)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     api<AdminStats>('/api/admin/stats')
       .then(setStats)
-      .catch(() => setStats({ totalUsers: 0, totalCourses: 0, totalEnrollments: 0 }))
+      .catch(() => {
+        router.push('/')
+      })
       .finally(() => setLoading(false))
-  }, [])
+  }, [router])
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-white/40 font-mono-text">جاري التحميل...</div>
+      <div className="min-h-screen flex items-center justify-center bg-[#F3F4F6]">
+        <div className="text-gray-400 font-mono-text text-sm">جاري التحميل...</div>
       </div>
     )
   }
 
   return (
-    <div className="py-12 bg-background min-h-screen pt-28 relative">
-      <div className="absolute inset-0 carbon-texture opacity-5 pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+    <div className="min-h-screen bg-[#F3F4F6] pt-24 pb-12">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="mb-10">
-          <span className="font-display text-primary tracking-[0.4em] uppercase text-sm mb-2 block">مركز القيادة</span>
-          <h1 className="font-display text-4xl md:text-5xl text-white tracking-tighter">لوحة تحكم المدير</h1>
+          <h1 className="font-display text-4xl text-[#1A2B4C] tracking-tight">لوحة تحكم المدير</h1>
+          <p className="text-gray-500 text-sm mt-1">مركز إدارة المنصة الأكاديمية</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <div className="glass p-6 border-r-2 border-r-primary">
-            <div className="font-display text-4xl text-primary">{stats?.totalUsers || 0}</div>
-            <div className="text-white/40 mt-1 font-display text-sm tracking-widest uppercase">إجمالي المستخدمين</div>
+          <div className="bg-white border border-gray-200 p-6 flex items-start gap-4">
+            <div className="w-12 h-12 bg-blue-50 flex items-center justify-center flex-shrink-0">
+              <Users className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <div className="font-display text-4xl text-[#1A2B4C]">{stats?.totalUsers || 0}</div>
+              <div className="text-gray-500 text-sm mt-1">إجمالي المستخدمين</div>
+            </div>
           </div>
-          <div className="glass p-6 border-r-2 border-r-green-500">
-            <div className="font-display text-4xl text-green-500">{stats?.totalCourses || 0}</div>
-            <div className="text-white/40 mt-1 font-display text-sm tracking-widest uppercase">إجمالي المواد</div>
+          <div className="bg-white border border-gray-200 p-6 flex items-start gap-4">
+            <div className="w-12 h-12 bg-emerald-50 flex items-center justify-center flex-shrink-0">
+              <BookOpen className="w-6 h-6 text-emerald-600" />
+            </div>
+            <div>
+              <div className="font-display text-4xl text-[#1A2B4C]">{stats?.totalCourses || 0}</div>
+              <div className="text-gray-500 text-sm mt-1">إجمالي المواد</div>
+            </div>
           </div>
-          <div className="glass p-6 border-r-2 border-r-amber-500">
-            <div className="font-display text-4xl text-amber-500">{stats?.totalEnrollments || 0}</div>
-            <div className="text-white/40 mt-1 font-display text-sm tracking-widest uppercase">إجمالي التسجيلات</div>
+          <div className="bg-white border border-gray-200 p-6 flex items-start gap-4">
+            <div className="w-12 h-12 bg-amber-50 flex items-center justify-center flex-shrink-0">
+              <UserCheck className="w-6 h-6 text-amber-600" />
+            </div>
+            <div>
+              <div className="font-display text-4xl text-[#1A2B4C]">{stats?.totalEnrollments || 0}</div>
+              <div className="text-gray-500 text-sm mt-1">إجمالي التسجيلات</div>
+            </div>
           </div>
         </div>
 
-        <h2 className="font-display text-2xl text-white tracking-tighter mb-6">إدارة المنصة</h2>
+        <h2 className="font-display text-2xl text-[#1A2B4C] mb-6">إدارة المنصة</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Link
             href="/admin/content"
-            className="group glass p-6 hover:border-primary/50 transition-all duration-500 border border-white/10"
+            className="group bg-white border border-gray-200 p-6 hover:border-[#1A2B4C] transition-all"
           >
-            <div className="text-3xl mb-3 text-primary">&#9881;</div>
-            <h3 className="font-display text-xl text-white tracking-tight group-hover:text-primary transition-colors">إدارة المحتوى</h3>
-            <p className="text-sm text-white/40 mt-1 font-mono-text">الفصول والدروس وأقفال المحتوى</p>
+            <Settings className="w-8 h-8 text-[#1A2B4C] mb-4" />
+            <h3 className="font-display text-xl text-[#1A2B4C] mb-1 group-hover:underline">إدارة المحتوى</h3>
+            <p className="text-sm text-gray-500">الفصول والدروس وترتيب المنهج</p>
           </Link>
           <Link
             href="/admin/content"
-            className="group glass p-6 hover:border-primary/50 transition-all duration-500 border border-white/10"
+            className="group bg-white border border-gray-200 p-6 hover:border-[#1A2B4C] transition-all"
           >
-            <div className="text-3xl mb-3 text-primary">&#128274;</div>
-            <h3 className="font-display text-xl text-white tracking-tight group-hover:text-primary transition-colors">التحكم بالأقفال</h3>
-            <p className="text-sm text-white/40 mt-1 font-mono-text">قفل وفتح المحتوى على مستوى الفصول والدروس</p>
+            <Lock className="w-8 h-8 text-[#1A2B4C] mb-4" />
+            <h3 className="font-display text-xl text-[#1A2B4C] mb-1 group-hover:underline">التحكم بالأقفال</h3>
+            <p className="text-sm text-gray-500">قفل وفتح المحتوى على مستوى الفصول والدروس</p>
           </Link>
           <Link
             href="/courses"
-            className="group glass p-6 hover:border-primary/50 transition-all duration-500 border border-white/10"
+            className="group bg-white border border-gray-200 p-6 hover:border-[#1A2B4C] transition-all"
           >
-            <div className="text-3xl mb-3 text-primary">&#128218;</div>
-            <h3 className="font-display text-xl text-white tracking-tight group-hover:text-primary transition-colors">المواد</h3>
-            <p className="text-sm text-white/40 mt-1 font-mono-text">عرض وإدارة المواد المتاحة</p>
+            <FileText className="w-8 h-8 text-[#1A2B4C] mb-4" />
+            <h3 className="font-display text-xl text-[#1A2B4C] mb-1 group-hover:underline">المواد الدراسية</h3>
+            <p className="text-sm text-gray-500">عرض وإدارة المواد المتاحة</p>
           </Link>
         </div>
       </div>

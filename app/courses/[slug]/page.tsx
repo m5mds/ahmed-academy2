@@ -30,24 +30,22 @@ export default async function CourseDetailPage({ params }: { params: { slug: str
   }
 
   return (
-    <div className="py-12 bg-background min-h-screen pt-28 relative">
-      <div className="absolute inset-0 carbon-texture opacity-5 pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+    <div className="min-h-screen bg-white pt-28 pb-12">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <div className="glass p-8 border-r-4 border-r-primary mb-8">
+            <div className="bg-[#F3F4F6] p-8 border-r-4 border-r-[#1A2B4C] mb-8">
               <div className="flex items-center gap-3 mb-4">
-                <span className="bg-primary px-3 py-1 font-display text-xs tracking-widest uppercase text-white">
+                <span className="bg-[#1A2B4C] px-3 py-1 text-xs tracking-widest uppercase text-white">
                   {course.level === 'BEGINNER' ? 'تأسيسي' : course.level === 'INTERMEDIATE' ? 'متقدم' : 'احترافي'}
                 </span>
                 {course.category && (
-                  <span className="bg-white/10 px-3 py-1 font-display text-xs tracking-widest uppercase text-white/60">{course.category}</span>
+                  <span className="bg-gray-200 px-3 py-1 text-xs tracking-widest uppercase text-gray-600">{course.category}</span>
                 )}
               </div>
-              <h1 className="font-display text-4xl md:text-5xl text-white tracking-tighter mb-4">{course.title}</h1>
-              <p className="text-white/50 text-base font-mono-text">{course.shortDescription || course.description}</p>
-              <div className="flex items-center gap-6 mt-6 text-white/40 font-display text-sm tracking-widest uppercase">
+              <h1 className="font-display text-4xl md:text-5xl text-[#1A2B4C] mb-4">{course.title}</h1>
+              <p className="text-gray-500 text-base">{course.shortDescription || course.description}</p>
+              <div className="flex items-center gap-6 mt-6 text-gray-400 text-sm">
                 <span>{course._count.enrollments} طالب</span>
                 {course.durationHours && <span>{course.durationHours} ساعة</span>}
                 <span>{course.lessons.length} درس</span>
@@ -55,36 +53,36 @@ export default async function CourseDetailPage({ params }: { params: { slug: str
             </div>
 
             {course.description && (
-              <div className="glass p-6 mb-8">
-                <h2 className="font-display text-xl text-white tracking-tighter mb-4 border-b border-white/10 pb-3">وصف المادة</h2>
-                <p className="text-white/50 leading-relaxed whitespace-pre-line font-mono-text text-sm">{course.description}</p>
+              <div className="bg-white border border-gray-200 p-6 mb-8">
+                <h2 className="font-display text-xl text-[#1A2B4C] mb-4 border-b border-gray-100 pb-3">وصف المادة</h2>
+                <p className="text-gray-600 leading-relaxed whitespace-pre-line text-sm">{course.description}</p>
               </div>
             )}
 
-            <div className="glass p-6">
-              <h2 className="font-display text-xl text-white tracking-tighter mb-4 border-b border-white/10 pb-3">محتوى المادة</h2>
+            <div className="bg-white border border-gray-200 p-6">
+              <h2 className="font-display text-xl text-[#1A2B4C] mb-4 border-b border-gray-100 pb-3">محتوى المادة</h2>
               {course.chapters.length > 0 ? (
                 <div className="space-y-4">
                   {course.chapters.map((chapter) => (
-                    <div key={chapter.id} className="border border-white/5">
-                      <div className="flex items-center gap-3 p-4 bg-white/5">
-                        <div className="w-1 h-6 bg-primary" />
-                        <h3 className="font-display text-lg text-white tracking-tight">{chapter.title}</h3>
-                        <span className="bg-primary/10 text-primary px-2 py-0.5 font-display text-xs tracking-widest uppercase">{chapter.tier}</span>
+                    <div key={chapter.id} className="border border-gray-100">
+                      <div className="flex items-center gap-3 p-4 bg-gray-50">
+                        <div className="w-1 h-6 bg-[#1A2B4C]" />
+                        <h3 className="font-display text-lg text-[#1A2B4C]">{chapter.title}</h3>
+                        <span className="bg-blue-50 text-[#1A2B4C] px-2 py-0.5 text-xs">{chapter.tier}</span>
                       </div>
-                      <div className="divide-y divide-white/5">
+                      <div className="divide-y divide-gray-50">
                         {chapter.lessons.map((lesson, idx) => (
                           <div key={lesson.id} className="flex items-center justify-between px-6 py-3">
                             <div className="flex items-center gap-3">
-                              <span className="w-7 h-7 bg-primary/10 text-primary flex items-center justify-center text-xs font-display">{idx + 1}</span>
-                              <span className="text-white/60 text-sm font-mono-text">{lesson.title}</span>
+                              <span className="w-7 h-7 bg-blue-50 text-[#1A2B4C] flex items-center justify-center text-xs">{idx + 1}</span>
+                              <span className="text-gray-600 text-sm">{lesson.title}</span>
                             </div>
                             <div className="flex items-center gap-3">
                               {lesson.durationMinutes && (
-                                <span className="text-white/30 text-xs font-mono-text">{lesson.durationMinutes} د</span>
+                                <span className="text-gray-400 text-xs font-mono-text">{lesson.durationMinutes} د</span>
                               )}
                               {lesson.isPreview && (
-                                <span className="bg-primary/10 text-primary px-2 py-0.5 text-xs font-display tracking-widest">مجاني</span>
+                                <span className="bg-emerald-50 text-emerald-600 px-2 py-0.5 text-xs">مجاني</span>
                               )}
                             </div>
                           </div>
@@ -96,61 +94,61 @@ export default async function CourseDetailPage({ params }: { params: { slug: str
               ) : course.lessons.length > 0 ? (
                 <div className="space-y-2">
                   {course.lessons.map((lesson, index) => (
-                    <div key={lesson.id} className="flex items-center justify-between p-4 border border-white/5 hover:border-primary/20 transition-colors">
+                    <div key={lesson.id} className="flex items-center justify-between p-4 border border-gray-100 hover:bg-gray-50 transition-colors">
                       <div className="flex items-center gap-3">
-                        <span className="w-8 h-8 bg-primary/10 text-primary flex items-center justify-center text-sm font-display">{index + 1}</span>
+                        <span className="w-8 h-8 bg-blue-50 text-[#1A2B4C] flex items-center justify-center text-sm">{index + 1}</span>
                         <div>
-                          <span className="text-white/70 text-sm font-mono-text">{lesson.title}</span>
+                          <span className="text-gray-700 text-sm">{lesson.title}</span>
                           {lesson.durationMinutes && (
-                            <span className="text-white/30 text-xs mr-3 font-mono-text">{lesson.durationMinutes} دقيقة</span>
+                            <span className="text-gray-400 text-xs mr-3 font-mono-text">{lesson.durationMinutes} دقيقة</span>
                           )}
                         </div>
                       </div>
                       {lesson.isPreview && (
-                        <span className="bg-primary/10 text-primary px-2 py-0.5 text-xs font-display tracking-widest">مجاني</span>
+                        <span className="bg-emerald-50 text-emerald-600 px-2 py-0.5 text-xs">مجاني</span>
                       )}
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-white/40 text-center py-6 font-mono-text text-sm">سيتم إضافة الدروس قريباً</p>
+                <p className="text-gray-400 text-center py-6 text-sm">سيتم إضافة الدروس قريباً</p>
               )}
             </div>
           </div>
 
           <div className="lg:col-span-1">
-            <div className="sticky top-28 glass p-6 border-t-2 border-t-primary">
+            <div className="sticky top-28 bg-white border border-gray-200 p-6 border-t-4 border-t-[#1A2B4C]">
               <div className="text-center mb-6">
-                <div className="font-display text-4xl text-white mb-1">
+                <div className="font-display text-4xl text-[#1A2B4C] mb-1">
                   {course.isFree ? 'مجاني' : `${course.price} ر.س`}
                 </div>
               </div>
               <Link
                 href="/login"
-                className="block w-full accent-button font-display text-lg tracking-widest uppercase py-3 text-white text-center shadow-[0_0_20px_rgba(255,79,0,0.3)] mb-6"
+                className="block w-full bg-[#1A2B4C] text-lg py-3 text-white text-center hover:bg-[#1A2B4C]/90 transition-colors mb-6"
               >
                 سجّل الآن
               </Link>
-              <div className="space-y-4 text-sm font-mono-text">
-                <div className="flex justify-between border-b border-white/5 pb-3">
-                  <span className="text-white/40">عدد الدروس</span>
-                  <span className="text-white/70">{course.lessons.length}</span>
+              <div className="space-y-4 text-sm">
+                <div className="flex justify-between border-b border-gray-100 pb-3">
+                  <span className="text-gray-400">عدد الدروس</span>
+                  <span className="text-[#1A2B4C]">{course.lessons.length}</span>
                 </div>
                 {course.durationHours && (
-                  <div className="flex justify-between border-b border-white/5 pb-3">
-                    <span className="text-white/40">المدة</span>
-                    <span className="text-white/70">{course.durationHours} ساعة</span>
+                  <div className="flex justify-between border-b border-gray-100 pb-3">
+                    <span className="text-gray-400">المدة</span>
+                    <span className="text-[#1A2B4C]">{course.durationHours} ساعة</span>
                   </div>
                 )}
-                <div className="flex justify-between border-b border-white/5 pb-3">
-                  <span className="text-white/40">المستوى</span>
-                  <span className="text-white/70">
+                <div className="flex justify-between border-b border-gray-100 pb-3">
+                  <span className="text-gray-400">المستوى</span>
+                  <span className="text-[#1A2B4C]">
                     {course.level === 'BEGINNER' ? 'تأسيسي' : course.level === 'INTERMEDIATE' ? 'متقدم' : 'احترافي'}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-white/40">عدد الطلاب</span>
-                  <span className="text-white/70">{course._count.enrollments}</span>
+                  <span className="text-gray-400">عدد الطلاب</span>
+                  <span className="text-[#1A2B4C]">{course._count.enrollments}</span>
                 </div>
               </div>
             </div>
