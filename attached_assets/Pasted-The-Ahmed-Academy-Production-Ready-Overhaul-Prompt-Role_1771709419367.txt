@@ -1,0 +1,85 @@
+The "Ahmed Academy" Production-Ready Overhaul Prompt
+Role: You are a Lead Full-Stack Engineer. Your task is to implement a structural and logical overhaul of Ahmed Academy, a high-security Next.js 14 educational platform, ensuring it is production-ready.
+
+1. Global Identity & Terminology (Non-Negotiable)
+Terminology: Perform a global code-base sweep. Replace all instances of 'دورة/دورات' (Course/Courses) with 'مادة/مواد' (Material/Materials).
+
+Certificates: Completely remove the api/certificates endpoint and all UI references to 'الشهادات' or 'Certificates'.
+
+Visual Persona: Use a Pure Light Theme (White #FFFFFF / Light Grey #F9F9F9). Remove all "glow" effects and "gaming" neons. Use Navy Blue (#1A2B4C) for headers and Safety Orange (#FF4F00) for primary action buttons.
+
+No Humans: Ensure no human portraits are used. Use 3D technical icons or SVG blueprints for engineering context.
+
+2. Database Schema & Access Logic
+Implement/Update the following models in Prisma/Database:
+
+Chapter: id, title, order, tier (MID1, MID2, FINAL), lessons[].
+
+ContentLock: * scope: ('GLOBAL' or 'PER_STUDENT').
+
+level: ('TIER', 'CHAPTER', 'LESSON').
+
+targetId: (The ID of the Tier name, Chapter, or Lesson).
+
+studentId: (Nullable, used for PER_STUDENT scope).
+
+isLocked: Boolean.
+
+AuditLog: Record every lock/unlock action with adminId, targetId, action, and timestamp.
+
+3. Educational Content Navigation (The "Tiered" UI)
+The Navigation Bar: Display three fixed tabs: MID1, MID2, and FINAL.
+
+Dropdown Logic: Each tab expands into a list of Chapters assigned to that tier.
+
+Nesting: Lessons are nested inside Chapters. Chapter titles are always visible.
+
+Student Behavior: Locked items (Global or Per-Student) must be visible but disabled. Clicking them triggers a toast message: "Access Restricted: Please contact administration or check your subscription."
+
+4. The "Triple-Check" Security Pipeline (Server-Side Only)
+When a student requests a lesson playback (/api/content/video/[lessonId]), the server must execute this sequence:
+
+JWT Validation: Ensure the user is authenticated.
+
+Expiry Check: If the subscription is expired, block access immediately (Override all).
+
+Per-Student Check: If a PER_STUDENT unlock exists for this specific student/lesson, Grant Access (Overrides Global Lock).
+
+Global Lock Check: If a GLOBAL lock exists for the Lesson, Chapter, or Tier, Block Access.
+
+Tier Entitlement: Ensure the student's SectionTag (MID1, MID2, etc.) matches the lesson's tier.
+
+JWS Generation: If all pass, generate a Cloudflare Stream JWS signed URL with a 3600s expiration.
+
+5. Admin Dashboard Governance
+Build the Chapter Management UI:
+
+CRUD: Create, Edit, Delete, and Drag-and-Drop Reordering of Chapters.
+
+Tier Assignment: Dropdown to assign a Chapter to MID1, MID2, or FINAL.
+
+Lock Controls: A "Shield" icon next to every Tier, Chapter, and Lesson.
+
+Toggle 1: Global Lock (On/Off).
+
+Toggle 2: Student Search -> Manual Unlock/Lock for that specific user.
+
+6. Production-Ready System Integrity
+Auth Logic Fix: If a user/admin is logged in, the Header must not show 'Sign In' or 'Join Now'. Replace them with 'Dashboard' and 'Logout'.
+
+Performance: Signaling server (Mediasoup) must be verified to use 4 CPU workers for WebRTC stability.
+
+Live Automation: Ensure Zoom webhooks for meeting.participant_joined and recording.completed are correctly mapped to update DailyActivity and notify students.
+
+RTL Engineering: The entire UI must respect dir="rtl" with no alignment breakages in Arabic.
+
+7. Verification & Build Command
+After implementation, execute the following and report results:
+
+npm run build: Must pass with zero TypeScript or Lint errors.
+
+Database Migration: Confirm all new models are successfully pushed.
+
+Security Test: Attempt to access a lesson URL directly without a JWS token—it must fail.
+
+Logic Test: Verify a 'Per-Student Unlock' allows a student into a 'Globally Locked' chapter

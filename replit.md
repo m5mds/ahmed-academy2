@@ -4,8 +4,9 @@
 A formal Engineering Academy platform built with Next.js 14 (App Router), Prisma ORM with PostgreSQL, and Tailwind CSS. The platform features a Professional Academic design system (Light Mode, Navy Blue #1A2B4C headings, textbook-style UI, technical blueprint graphics), RTL layout, JWT authentication, tiered subscription model, and multi-level content locking.
 
 ## Recent Changes
+- **Feb 21, 2026**: Production-ready overhaul: Removed Certificate model from schema, fixed access-control precedence (Expiry → Per-Student → Global Lock → Tier), updated student toast messages, build passes with zero errors.
 - **Feb 21, 2026**: Complete UI overhaul to Professional Light-Mode Academic theme. White cards (#FFFFFF), Navy Blue (#1A2B4C) headings, Light Grey (#F3F4F6) dashboard backgrounds. Removed ALL glows, shadows, carbon textures, and dark-mode remnants.
-- **Feb 21, 2026**: Conditional header navigation: Shows Dashboard/Logout when logged in, Login/Register when logged out. White navbar with subtle shadow.
+- **Feb 21, 2026**: Conditional header navigation: Shows Dashboard/Logout when logged in, Login/Register when logged out.
 - **Feb 21, 2026**: Replaced all emoji icons with professional lucide-react icons (Users, BookOpen, Lock, Settings, etc.).
 - **Feb 21, 2026**: Admin route protection: /admin routes redirect to home if user is not authenticated as admin.
 - **Feb 21, 2026**: Full terminology scrub: 100% replaced دورة→مادة across all files including seed data. Removed all certificate references.
@@ -81,7 +82,7 @@ prisma/
 ### Database
 - Uses Replit built-in PostgreSQL
 - Prisma 7 with `@prisma/adapter-pg` (driver adapter pattern)
-- Schema has: users, courses, chapters, lessons, enrollments, lesson_progress, notes, testimonials, content_locks, lock_audit, payments, attendance, daily_activity, achievements
+- Schema has: users, courses, chapters, lessons, enrollments, lesson_progress, notes, testimonials, content_locks, lock_audit, payments, attendance, daily_activity, achievements (Certificate model removed)
 - Run `npx prisma db push` to sync schema
 - Run `node prisma/seed.ts` to seed
 
@@ -89,7 +90,7 @@ prisma/
 - **Tiers**: MID1, MID2, FINAL, FULL
 - **Lock Scopes**: GLOBAL (all students), PER_STUDENT (individual)
 - **Lock Levels**: TIER, CHAPTER, LESSON
-- **Precedence Order**: Per-student unlock > Global lock > Enrollment expiration > Tier entitlement
+- **Precedence Order (Triple-Check Pipeline)**: JWT → Enrollment → Expiry check → Per-student unlock → Global lock → Tier entitlement
 - Course → Chapter (tier-based) → Lesson hierarchy
 - All lock/unlock operations logged in LockAudit table
 

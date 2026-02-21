@@ -35,6 +35,10 @@ export async function checkLessonAccess(
     return { allowed: false, reason: 'يجب الاشتراك في المادة أولاً' }
   }
 
+  if (enrollment.expiresAt && new Date(enrollment.expiresAt) < new Date()) {
+    return { allowed: false, reason: 'انتهت صلاحية اشتراكك. يرجى التجديد' }
+  }
+
   const perStudentUnlock = await prisma.contentLock.findFirst({
     where: {
       scope: 'PER_STUDENT',
@@ -72,10 +76,6 @@ export async function checkLessonAccess(
     return { allowed: false, reason: 'هذا المحتوى مقفل حالياً' }
   }
 
-  if (enrollment.expiresAt && new Date(enrollment.expiresAt) < new Date()) {
-    return { allowed: false, reason: 'انتهت صلاحية اشتراكك. يرجى التجديد' }
-  }
-
   const tierAllowed = checkTierEntitlement(enrollment.tier, lesson.tier)
   if (!tierAllowed) {
     return { allowed: false, reason: 'مستواك الحالي لا يسمح بالوصول لهذا الدرس' }
@@ -98,6 +98,10 @@ export async function getContentLockStatus(
   enrollmentTier: string | null,
   isExpired: boolean
 ): Promise<{ locked: boolean; reason?: string }> {
+  if (isExpired) {
+    return { locked: true, reason: 'اشتراك منتهي' }
+  }
+
   const perStudentUnlock = await prisma.contentLock.findFirst({
     where: {
       scope: 'PER_STUDENT',
@@ -129,10 +133,6 @@ export async function getContentLockStatus(
 
   if (globalLock) {
     return { locked: true, reason: 'محتوى مقفل' }
-  }
-
-  if (isExpired) {
-    return { locked: true, reason: 'اشتراك منتهي' }
   }
 
   if (enrollmentTier && !checkTierEntitlement(enrollmentTier, lessonTier)) {

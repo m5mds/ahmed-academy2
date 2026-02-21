@@ -82,9 +82,9 @@ export default function ContentPage() {
     })
   }
 
-  const handleLockedClick = (reason?: string) => {
-    setAccessMessage(reason || 'هذا المحتوى مقيد الوصول')
-    setTimeout(() => setAccessMessage(null), 3000)
+  const handleLockedClick = () => {
+    setAccessMessage('الوصول مقيد: يرجى التواصل مع الإدارة أو التحقق من اشتراكك')
+    setTimeout(() => setAccessMessage(null), 4000)
   }
 
   if (loading) {
@@ -178,7 +178,7 @@ export default function ContentPage() {
                     {chapter.lessons.map((lesson, idx) => (
                       <div
                         key={lesson.id}
-                        onClick={() => lesson.locked ? handleLockedClick(lesson.lockReason) : undefined}
+                        onClick={() => lesson.locked ? handleLockedClick() : undefined}
                         className={`flex items-center justify-between px-6 py-3 ${
                           idx > 0 ? 'border-t border-gray-50' : ''
                         } ${lesson.locked ? 'opacity-40 cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'}`}

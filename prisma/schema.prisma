@@ -55,7 +55,6 @@ model User {
   enrollments    Enrollment[]
   lessonProgress LessonProgress[]
   notes          Note[]
-  certificates   Certificate[]
   testimonials   Testimonial[]
   attendance     Attendance[]
   dailyActivity  DailyActivity[]
@@ -86,7 +85,6 @@ model Course {
   chapters     Chapter[]
   lessons      Lesson[]
   enrollments  Enrollment[]
-  certificates Certificate[]
   testimonials Testimonial[]
 
   @@map("courses")
@@ -252,20 +250,6 @@ model Note {
   lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   @@map("notes")
-}
-
-model Certificate {
-  id             String   @id @default(uuid())
-  userId         String   @map("user_id")
-  courseId        String   @map("course_id")
-  certificateUrl String?  @map("certificate_url")
-  issuedAt       DateTime @default(now()) @map("issued_at")
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, courseId])
-  @@map("certificates")
 }
 
 model Testimonial {
