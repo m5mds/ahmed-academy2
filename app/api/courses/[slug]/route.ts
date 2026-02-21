@@ -15,7 +15,7 @@ export async function GET(
     })
 
     if (!course) {
-      return NextResponse.json({ message: 'الدورة غير موجودة' }, { status: 404 })
+      return NextResponse.json({ message: 'المادة غير موجودة' }, { status: 404 })
     }
 
     return NextResponse.json({ course })

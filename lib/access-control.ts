@@ -32,7 +32,7 @@ export async function checkLessonAccess(
   })
 
   if (!enrollment) {
-    return { allowed: false, reason: 'يجب الاشتراك في الدورة أولاً' }
+    return { allowed: false, reason: 'يجب الاشتراك في المادة أولاً' }
   }
 
   const perStudentUnlock = await prisma.contentLock.findFirst({
