@@ -10,18 +10,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: '#0B0B0B',
-        foreground: '#FFFFFF',
-        card: '#151515',
-        'card-foreground': '#FFFFFF',
-        primary: '#FF4F00',
+        background: '#FFFFFF',
+        foreground: '#1A2B4C',
+        card: '#F9FAFB',
+        'card-foreground': '#1A2B4C',
+        primary: '#1A2B4C',
         'primary-foreground': '#FFFFFF',
-        secondary: '#1a1a1a',
-        muted: '#2a2a2a',
-        'muted-foreground': '#a1a1a1',
+        secondary: '#4B5563',
+        muted: '#F3F4F6',
+        'muted-foreground': '#6B7280',
         accent: '#FF4F00',
-        border: 'rgba(255, 255, 255, 0.1)',
-        ring: '#FF4F00',
+        border: '#E5E7EB',
+        ring: '#1A2B4C',
       },
       fontFamily: {
         display: ['"Bebas Neue"', 'cursive'],

@@ -38,75 +38,68 @@ export default function Header() {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 md:px-12 transition-all duration-300 ${
-      scrolled ? 'bg-[#0A0A0A]/95 backdrop-blur-lg border-b border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.5)]' : 'bg-transparent'
+      scrolled ? 'bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-sm' : 'bg-transparent'
     }`}>
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link href="/" className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary rotate-45 flex items-center justify-center shadow-[0_0_20px_rgba(255,79,0,0.3)]">
-            <span className="font-display text-white -rotate-45 text-xl">A</span>
+          <div className="w-10 h-10 bg-[#1A2B4C] flex items-center justify-center">
+            <span className="font-display text-white text-xl">A</span>
           </div>
           <div className="flex flex-col">
-            <span className="font-display text-xl tracking-tighter uppercase text-white leading-none">
+            <span className="font-display text-xl tracking-tighter uppercase text-[#1A2B4C] leading-none">
               أكاديمية أحمد
             </span>
-            <span className="font-mono-text text-[8px] tracking-[0.4em] uppercase text-primary/60 leading-none">
+            <span className="font-mono-text text-[8px] tracking-[0.4em] uppercase text-gray-500 leading-none">
               ENGINEERING ACADEMY
             </span>
           </div>
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
-          <Link href="/" className="font-mono-text text-xs tracking-[0.2em] uppercase text-white/50 hover:text-white transition-colors duration-300">
-            الرئيسية
+          <Link href="/" className="font-mono-text text-xs tracking-[0.2em] uppercase text-gray-600 hover:text-[#1A2B4C] transition-colors">
+            عن الأكاديمية
           </Link>
-          <Link href="/courses" className="font-mono-text text-xs tracking-[0.2em] uppercase text-white/50 hover:text-white transition-colors duration-300">
-            المواد
+          <Link href="/courses" className="font-mono-text text-xs tracking-[0.2em] uppercase text-gray-600 hover:text-[#1A2B4C] transition-colors">
+            المناهج والمواد الدراسية
+          </Link>
+          <Link href="/contact" className="font-mono-text text-xs tracking-[0.2em] uppercase text-gray-600 hover:text-[#1A2B4C] transition-colors">
+            تواصل معنا
           </Link>
           {user ? (
             <>
-              {user.role === 'STUDENT' && (
-                <Link href="/content" className="font-mono-text text-xs tracking-[0.2em] uppercase text-white/50 hover:text-white transition-colors duration-300">
-                  المحتوى
-                </Link>
-              )}
               <Link
                 href={user.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard'}
-                className="font-mono-text text-xs tracking-[0.2em] uppercase text-white/50 hover:text-white transition-colors duration-300"
+                className="font-mono-text text-xs tracking-[0.2em] uppercase text-gray-600 hover:text-[#1A2B4C] transition-colors"
               >
                 لوحة التحكم
               </Link>
               <button
                 onClick={handleLogout}
-                className="font-mono-text text-xs tracking-[0.2em] uppercase text-white/50 hover:text-red-400 transition-colors duration-300"
+                className="font-mono-text text-xs tracking-[0.2em] uppercase text-red-600 transition-colors"
               >
                 خروج
               </button>
-              <div className="w-9 h-9 bg-primary/20 border border-primary/50 flex items-center justify-center">
-                <span className="text-primary text-xs font-bold font-display">
-                  {user.name.charAt(0)}
-                </span>
-              </div>
             </>
           ) : (
             <>
               <Link
                 href="/login"
-                className="font-mono-text text-xs tracking-[0.2em] uppercase text-white/50 hover:text-white transition-colors duration-300"
+                className="font-mono-text text-xs tracking-[0.2em] uppercase text-gray-600 hover:text-[#1A2B4C] transition-colors"
               >
                 دخول
               </Link>
               <Link
                 href="/register"
-                className="accent-button font-display text-sm tracking-[0.2em] uppercase px-6 py-2.5 text-white shadow-[0_0_15px_rgba(255,79,0,0.3)]"
+                className="bg-[#1A2B4C] font-display text-sm tracking-[0.2em] uppercase px-6 py-2.5 text-white"
               >
-                انضم الآن
+                التسجيل الأكاديمي
               </Link>
             </>
           )}
         </nav>
 
         <button
-          className="md:hidden text-white"
+          className="md:hidden text-[#1A2B4C]"
           onClick={() => setMenuOpen(!menuOpen)}
         >
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -120,23 +113,18 @@ export default function Header() {
       </div>
 
       {menuOpen && (
-        <div className="md:hidden mt-4 py-6 border-t border-white/10 bg-[#0A0A0A]/95 backdrop-blur-lg -mx-6 px-6">
+        <div className="md:hidden mt-4 py-6 border-t border-gray-100 bg-white shadow-xl -mx-6 px-6">
           <div className="flex flex-col gap-5">
-            <Link href="/" onClick={() => setMenuOpen(false)} className="font-mono-text text-sm tracking-[0.2em] uppercase text-white/60 hover:text-primary">الرئيسية</Link>
-            <Link href="/courses" onClick={() => setMenuOpen(false)} className="font-mono-text text-sm tracking-[0.2em] uppercase text-white/60 hover:text-primary">المواد</Link>
+            <Link href="/" onClick={() => setMenuOpen(false)} className="font-mono-text text-sm tracking-[0.2em] uppercase text-gray-600">عن الأكاديمية</Link>
+            <Link href="/courses" onClick={() => setMenuOpen(false)} className="font-mono-text text-sm tracking-[0.2em] uppercase text-gray-600">المواد الدراسية</Link>
+            <Link href="/contact" onClick={() => setMenuOpen(false)} className="font-mono-text text-sm tracking-[0.2em] uppercase text-gray-600">تواصل معنا</Link>
             {user ? (
-              <>
-                {user.role === 'STUDENT' && (
-                  <Link href="/content" onClick={() => setMenuOpen(false)} className="font-mono-text text-sm tracking-[0.2em] uppercase text-white/60 hover:text-primary">المحتوى</Link>
-                )}
-                <Link href={user.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard'} onClick={() => setMenuOpen(false)} className="font-mono-text text-sm tracking-[0.2em] uppercase text-white/60 hover:text-primary">لوحة التحكم</Link>
-                <button onClick={handleLogout} className="text-right font-mono-text text-sm tracking-[0.2em] uppercase text-white/60 hover:text-red-400">خروج</button>
-              </>
+              <Link href={user.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard'} onClick={() => setMenuOpen(false)} className="font-mono-text text-sm tracking-[0.2em] uppercase text-gray-600">لوحة التحكم</Link>
             ) : (
               <>
-                <Link href="/login" onClick={() => setMenuOpen(false)} className="font-mono-text text-sm tracking-[0.2em] uppercase text-white/60 hover:text-primary">دخول</Link>
-                <Link href="/register" onClick={() => setMenuOpen(false)} className="accent-button font-display text-sm tracking-widest uppercase px-6 py-3 text-white text-center shadow-[0_0_15px_rgba(255,79,0,0.3)]">
-                  انضم الآن
+                <Link href="/login" onClick={() => setMenuOpen(false)} className="font-mono-text text-sm tracking-[0.2em] uppercase text-gray-600">دخول</Link>
+                <Link href="/register" onClick={() => setMenuOpen(false)} className="bg-[#1A2B4C] font-display text-sm tracking-widest uppercase px-6 py-3 text-white text-center">
+                  التسجيل الأكاديمي
                 </Link>
               </>
             )}

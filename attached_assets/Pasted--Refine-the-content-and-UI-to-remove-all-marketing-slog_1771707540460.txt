@@ -1,0 +1,37 @@
+**"Refine the content and UI to remove all marketing slogans. The platform must feel like a serious, high-level Engineering Academy. **
+
+1. Content & Text Changes:
+
+Remove 'أتقن الحرفة': Replace it with a formal academic heading such as 'المنصة التعليمية المتخصصة في الهندسة والابتكار التقني' (Educational platform specialized in engineering and technical innovation) or 'أكاديمية أحمد للعلوم الهندسية المتقدمة'.
+
+Button Text: Change 'تصفح المواد' to a more formal 'المناهج والمواد الدراسية' (Curricula and Study Materials).
+
+Terminology: Maintain the global rule of using 'مادة' instead of 'دورة'.
+
+Sub-text: Instead of marketing fluff, use: 'توفير محتوى تعليمي هندسي رصين يركز على التطبيق العملي والأسس النظرية المتقدمة.' (Providing robust engineering educational content focusing on practical application and advanced theoretical foundations.)
+
+2. BEAM-Style 'Academic' UI Layout:
+
+The Hero Section: Move away from a 'centered' landing page look. Use a Left-to-Right split:
+
+Right (RTL): Academic title, sub-description, and a clean 'Enrollment' button.
+
+Left: A detailed, static technical blueprint or a 3D cross-section of an engineering component (e.g., a structural truss or a circuit schematic).
+
+Header: Ensure the header is professional and minimalist, with links for 'عن الأكاديمية' (About), 'المواد الدراسية' (Materials), and 'تواصل معنا' (Contact).
+
+3. Light-Mode Professionalism:
+
+Keep the theme strictly Light Mode (White/Light Grey).
+
+Use Navy Blue (#1A2B4C) for headings to project authority and Grey (#4B5563) for academic descriptions.
+
+Use a clean, bordered grid for the materials section, avoiding any shadows or glows that feel like 'apps' rather than 'textbooks'.
+
+4. Feature Removal Verification:
+
+Double-check that all references to Certificates (شهادات) are completely removed from the navigation and content.
+
+5. Navigation Logic:
+
+Organize the 'Materials' section by engineering sub-disciplines (e.g., Mechanical, Electrical, Civil) to reflect a high-level academic structure."
