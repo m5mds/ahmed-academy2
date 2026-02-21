@@ -1,0 +1,159 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  STUDENT
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  avatarUrl    String?  @map("avatar_url")
+  role         Role     @default(STUDENT)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  enrollments    Enrollment[]
+  lessonProgress LessonProgress[]
+  notes          Note[]
+  certificates   Certificate[]
+  testimonials   Testimonial[]
+
+  @@map("users")
+}
+
+model Course {
+  id              String      @id @default(uuid())
+  slug            String      @unique
+  title           String
+  description     String?
+  shortDescription String?    @map("short_description")
+  imageUrl        String?     @map("image_url")
+  previewVideoUrl String?     @map("preview_video_url")
+  price           Decimal     @default(0) @db.Decimal(10, 2)
+  isFree          Boolean     @default(false) @map("is_free")
+  category        String?
+  level           CourseLevel @default(BEGINNER)
+  durationHours   Int?        @map("duration_hours")
+  studentsCount   Int         @default(0) @map("students_count")
+  rating          Decimal     @default(0) @db.Decimal(3, 2)
+  isPublished     Boolean     @default(false) @map("is_published")
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+
+  lessons      Lesson[]
+  enrollments  Enrollment[]
+  certificates Certificate[]
+  testimonials Testimonial[]
+
+  @@map("courses")
+}
+
+model Lesson {
+  id             String   @id @default(uuid())
+  courseId        String   @map("course_id")
+  title          String
+  description    String?
+  videoUrl       String?  @map("video_url")
+  durationMinutes Int?    @map("duration_minutes")
+  orderIndex     Int      @map("order_index")
+  isPreview      Boolean  @default(false) @map("is_preview")
+  resourcesUrl   String?  @map("resources_url")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  course   Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  progress LessonProgress[]
+  notes    Note[]
+
+  @@map("lessons")
+}
+
+model Enrollment {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  courseId     String    @map("course_id")
+  enrolledAt  DateTime  @default(now()) @map("enrolled_at")
+  completedAt DateTime? @map("completed_at")
+  progress    Decimal   @default(0) @db.Decimal(5, 2)
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@map("enrollments")
+}
+
+model LessonProgress {
+  id                  String    @id @default(uuid())
+  userId              String    @map("user_id")
+  lessonId            String    @map("lesson_id")
+  isCompleted         Boolean   @default(false) @map("is_completed")
+  completedAt         DateTime? @map("completed_at")
+  lastWatchedPosition Int       @default(0) @map("last_watched_position")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@map("lesson_progress")
+}
+
+model Note {
+  id               String   @id @default(uuid())
+  userId           String   @map("user_id")
+  lessonId         String   @map("lesson_id")
+  content          String
+  timestampSeconds Int?     @map("timestamp_seconds")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@map("notes")
+}
+
+model Certificate {
+  id             String   @id @default(uuid())
+  userId         String   @map("user_id")
+  courseId        String   @map("course_id")
+  certificateUrl String?  @map("certificate_url")
+  issuedAt       DateTime @default(now()) @map("issued_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@map("certificates")
+}
+
+model Testimonial {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  courseId    String   @map("course_id")
+  content    String
+  rating     Int
+  isFeatured Boolean  @default(false) @map("is_featured")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@map("testimonials")
+}
