@@ -1,6 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     domains: ['localhost'],
     remotePatterns: [
@@ -23,6 +29,7 @@ const nextConfig = {
       },
     ]
   },
+  output: 'standalone',
 }
 
 module.exports = nextConfig

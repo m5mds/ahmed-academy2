@@ -1,0 +1,37 @@
+"Transform the entire website into a high-end Engineering Academy platform, using the structural layout and UX hierarchy of 'beam.co.ae' as the blueprint, but reskinned with a 'Dark Industrial' engineering aesthetic.
+
+1. Core Architectural Layout (Inspired by BEAM):
+
+Institutional Header: A clean, fixed navigation bar with the 'Ahmed Academy' logo on the right (RTL). Include a prominent 'Register Interest' or 'انضم الآن' button in high-contrast orange.
+
+Hero Slider: Replace the BEAM school images with a high-fidelity, interactive 3D Exploded View of a mechanical system. Use the same 'split-screen' or 'centered hero' spacing as BEAM, but with technical wireframes.
+
+Animated Statistics: Replicate the BEAM 'Stats' section (e.g., 0+ Students, 0+ Modules) using a ticker-counter animation. Label them with engineering metrics like 'ساعات التدريب التقني' (Technical Training Hours) and 'النماذج الهندسية' (Engineering Models).
+
+2. Terminology & Content Logic (STRICT):
+
+Global Change: Replace every instance of 'دورة/دورات' with 'مادة/مواد'.
+
+Removal: Delete all UI components, pages, or database fields related to 'Certificates' or 'الشهادات'.
+
+Sectioning: Instead of 'Our Schools', name the section 'المسارات الهندسية' (Engineering Tracks) or 'المواد المتوفرة' (Available Materials).
+
+3. Visual Design System (Engineering Spirit):
+
+Color Palette: Swap BEAM's corporate blue/white for Deep Obsidian (#0A0A0A), Mechanical Grey (#2C2C2C), and Safety Orange (#FF4F00) as the primary action color.
+
+Typography: Use 'Monument Extended' for high-impact titles (like BEAM’s main headers) and 'JetBrains Mono' for technical sub-labels to give it a 'Blueprint' feel.
+
+UI Components: Use the same grid-card layout seen on BEAM’s 'Our Schools' section, but style them as 'Technical Data Sheets'. Instead of photos of buildings, use isometric 3D icons of gears, circuits, or structural trusses.
+
+4. Global Site Effects:
+
+Scroll Behavior: Implement smooth scroll-triggered animations for all sections.
+
+Glassmorphism: Use the frosted-glass effect for the 'Contact Us' (تواصل معنا) form and informational cards, ensuring the blueprint grid is visible underneath.
+
+RTL Support: Ensure the entire site is natively optimized for Arabic, with fonts, alignments, and the sidebar/navigation perfectly mirrored.
+
+5. Engineering 'Values' Section:
+
+Replace BEAM’s values (Integrity, Compassion) with 'Engineering Excellence' values: الدقة (Precision), الكفاءة (Efficiency), and الابتكار (Innovation), using technical icons instead of icons of people.
