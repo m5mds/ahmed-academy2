@@ -1,34 +1,28 @@
 # Arabic Academy (أكاديمية أحمد)
 
 ## Overview
-An engineering academy platform built with Next.js 14 (App Router), Prisma ORM with PostgreSQL, and Tailwind CSS. The platform features a Dark-Industrial design system (matte black, safety orange accents, carbon texture backgrounds), RTL layout, JWT authentication, tiered subscription model, multi-level content locking, and an admin dashboard with content management.
+A formal Engineering Academy platform built with Next.js 14 (App Router), Prisma ORM with PostgreSQL, and Tailwind CSS. The platform features a Professional Academic design system (Light Mode, Navy Blue #1A2B4C headings, textbook-style UI, technical blueprint graphics), RTL layout, JWT authentication, tiered subscription model, and multi-level content locking.
 
 ## Recent Changes
-- **Feb 21, 2026**: Cleaned up project - removed 14 unused dependencies (fabric, mediasoup, socket.io, express, aws-sdk, swiper, react-player, etc.), removed conflicting pages/ directory, cleaned build cache. App runs cleanly with no browser errors.
-- **Feb 21, 2026**: Enhanced landing page with BEAM-inspired layout: AnimatedCounter (intersection observer + requestAnimationFrame), ScrollReveal animations, engineering values section (الدقة/الكفاءة/الابتكار) with SVG icons, glassmorphism contact form, technical wireframe backgrounds. Split into Server Component + Client Component (HomeClient.tsx) for SSR+interactivity.
-- **Feb 21, 2026**: Applied Dark-Industrial design overhaul. Matte black (#0B0B0B) background, safety orange (#FF4F00) accents, Bebas Neue display font, JetBrains Mono sub-text, carbon texture backgrounds, glassmorphism cards, sharp corners (0 radius). Replaced دورة/دورات with مادة/مواد. Removed certificate features. Updated to engineering academy context.
-- **Feb 21, 2026**: Added multi-level content locking system with Chapter model, ContentLock and LockAudit models. Admin UI for chapter CRUD, tier/chapter/lesson lock controls. Student content page with MID1/MID2/FINAL tabs.
-- **Feb 2026**: Initial setup from GitHub import. Rebuilt missing source files from project documentation. Set up Prisma 7 with PrismaPg adapter, seeded database with sample courses and admin user.
+- **Feb 21, 2026**: Transitioned to professional Light-Mode Academic UI. Replaced Dark-Industrial theme with Navy Blue (#1A2B4C) and White palette. Refactored Hero to a formal split-layout with technical blueprints.
+- **Feb 21, 2026**: Refined all content to remove marketing slogans. Updated terminology to formal academic headers (e.g., 'أكاديمية أحمد للعلوم الهندسية المتقدمة'). Removed all certificate references.
+- **Feb 21, 2026**: Restructured materials section by engineering sub-disciplines (Mechanical, Electrical, Civil) with a textbook-style grid layout.
+- **Feb 21, 2026**: Cleaned up project dependencies and removed conflicting pages/ directory.
 
 ## Tech Stack
 - **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript
-- **Database**: PostgreSQL (Replit built-in, via Prisma 7 with `@prisma/adapter-pg`)
-- **Styling**: Tailwind CSS with Dark-Industrial theme
-- **Fonts**: Bebas Neue (display/headers), JetBrains Mono (sub-text/mono), Cairo (Arabic body)
-- **Auth**: JWT (jose library) with httpOnly cookies
-- **ORM**: Prisma 7
+- **Database**: PostgreSQL (Replit built-in)
+- **Styling**: Tailwind CSS (Academic Light Theme)
+- **Fonts**: Cairo (Arabic body), Bebas Neue (Headers), JetBrains Mono (Technical)
 
-## Design System — Dark-Industrial
-- **Background**: #0B0B0B (matte black)
-- **Primary/Accent**: #FF4F00 (safety orange)
-- **Card**: #151515
-- **Border**: rgba(255,255,255,0.1)
-- **Display Font**: Bebas Neue (uppercase, tracking-tighter)
-- **Mono Font**: JetBrains Mono
-- **Arabic Font**: Cairo
-- **Border Radius**: 0 (sharp corners)
-- **Effects**: carbon-texture, glass (backdrop blur), text-glow, bokeh-streak, accent-button, sharp-button
+## Design System — Professional Academic
+- **Background**: #FFFFFF (White)
+- **Primary/Heading**: #1A2B4C (Navy Blue)
+- **Accent**: #FF4F00 (Safety Orange - minimal use)
+- **Border**: #E5E7EB (Light Grey)
+- **Layout**: Split Hero, Bordered Grid, RTL support
+- **Terminology**: مادة (Material), منهج (Curriculum), استفسار أكاديمي (Academic Inquiry)
 
 ## Project Architecture
 
