@@ -266,3 +266,19 @@ model Testimonial {
 
   @@map("testimonials")
 }
+
+model LiveSession {
+  id            String    @id @default(uuid())
+  title         String?
+  tier          Tier
+  zoomMeetingId String?   @map("zoom_meeting_id")
+  zoomJoinUrl   String?   @map("zoom_join_url")
+  zoomStartUrl  String?   @map("zoom_start_url")
+  isLive        Boolean   @default(false) @map("is_live")
+  scheduledAt   DateTime? @map("scheduled_at")
+  startedAt     DateTime? @map("started_at")
+  endedAt       DateTime? @map("ended_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  @@map("live_sessions")
+}

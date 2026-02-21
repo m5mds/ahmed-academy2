@@ -4,9 +4,11 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { api } from '@/lib/api'
+import { useSession } from '@/lib/session-context'
 
 export default function LoginPage() {
   const router = useRouter()
+  const { refetch } = useSession()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -22,6 +24,7 @@ export default function LoginPage() {
         method: 'POST',
         body: { email, password },
       })
+      await refetch()
       if (data.user.role === 'ADMIN') {
         router.push('/admin/dashboard')
       } else {

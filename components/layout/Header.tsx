@@ -1,34 +1,22 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { api } from '@/lib/api'
-import { BookOpen, LayoutDashboard, LogOut, Menu, X, GraduationCap } from 'lucide-react'
-
-interface User {
-  id: string
-  name: string
-  email: string
-  role: string
-}
+import { useSession } from '@/lib/session-context'
+import { BookOpen, LayoutDashboard, LogOut, Menu, X, GraduationCap, Video } from 'lucide-react'
 
 export default function Header() {
-  const [user, setUser] = useState<User | null>(null)
+  const { user, loading, refetch } = useSession()
   const [menuOpen, setMenuOpen] = useState(false)
   const router = useRouter()
-
-  useEffect(() => {
-    api<{ user: User }>('/api/auth/me')
-      .then((data) => setUser(data.user))
-      .catch(() => setUser(null))
-  }, [])
 
   const handleLogout = async () => {
     try {
       await api('/api/auth/logout', { method: 'POST' })
     } catch {}
-    setUser(null)
+    refetch()
     router.push('/')
   }
 
@@ -60,13 +48,19 @@ export default function Header() {
             تواصل معنا
           </Link>
 
-          {user ? (
+          {!loading && user ? (
             <>
               {user.role === 'STUDENT' && (
-                <Link href="/content" className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#1A2B4C] transition-colors">
-                  <BookOpen className="w-4 h-4" />
-                  المحتوى
-                </Link>
+                <>
+                  <Link href="/content" className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#1A2B4C] transition-colors">
+                    <BookOpen className="w-4 h-4" />
+                    المحتوى
+                  </Link>
+                  <Link href="/live" className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#1A2B4C] transition-colors">
+                    <Video className="w-4 h-4" />
+                    المحاضرات المباشرة
+                  </Link>
+                </>
               )}
               <Link
                 href={user.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard'}
@@ -83,7 +77,7 @@ export default function Header() {
                 تسجيل الخروج
               </button>
             </>
-          ) : (
+          ) : !loading && !user ? (
             <>
               <Link
                 href="/login"
@@ -99,7 +93,7 @@ export default function Header() {
                 انضم الآن
               </Link>
             </>
-          )}
+          ) : null}
         </nav>
 
         <button
@@ -116,17 +110,23 @@ export default function Header() {
             <Link href="/" onClick={() => setMenuOpen(false)} className="text-sm text-gray-600">الرئيسية</Link>
             <Link href="/courses" onClick={() => setMenuOpen(false)} className="text-sm text-gray-600">المواد الدراسية</Link>
             <Link href="/contact" onClick={() => setMenuOpen(false)} className="text-sm text-gray-600">تواصل معنا</Link>
-            {user ? (
+            {!loading && user ? (
               <>
+                {user.role === 'STUDENT' && (
+                  <>
+                    <Link href="/content" onClick={() => setMenuOpen(false)} className="text-sm text-gray-600">المحتوى</Link>
+                    <Link href="/live" onClick={() => setMenuOpen(false)} className="text-sm text-gray-600">المحاضرات المباشرة</Link>
+                  </>
+                )}
                 <Link href={user.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard'} onClick={() => setMenuOpen(false)} className="text-sm font-semibold text-[#1A2B4C]">لوحة التحكم</Link>
                 <button onClick={handleLogout} className="text-right text-sm text-red-500">تسجيل الخروج</button>
               </>
-            ) : (
+            ) : !loading && !user ? (
               <>
                 <Link href="/login" onClick={() => setMenuOpen(false)} className="text-sm text-[#1A2B4C] font-semibold">تسجيل الدخول</Link>
                 <Link href="/register" onClick={() => setMenuOpen(false)} className="bg-[#1A2B4C] text-sm px-5 py-2.5 text-white text-center">انضم الآن</Link>
               </>
-            )}
+            ) : null}
           </div>
         </div>
       )}
