@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { api } from '@/lib/api'
-import { Plus, Pencil, Trash2, ChevronUp, ChevronDown, Lock, Unlock, User } from 'lucide-react'
+import { Plus, Pencil, Trash2, ChevronUp, ChevronDown, Lock, Unlock, User, GripVertical, BookOpen } from 'lucide-react'
 
 interface Lesson {
   id: string
@@ -56,6 +56,19 @@ export default function AdminContentPage() {
   const [editTier, setEditTier] = useState('')
   const [lockStudentId, setLockStudentId] = useState('')
   const [feedback, setFeedback] = useState<string | null>(null)
+  const [showCreateCourse, setShowCreateCourse] = useState(false)
+  const [newCourseTitle, setNewCourseTitle] = useState('')
+  const [newCourseSlug, setNewCourseSlug] = useState('')
+  const [editingCourseId, setEditingCourseId] = useState<string | null>(null)
+  const [editCourseTitle, setEditCourseTitle] = useState('')
+  const [editCourseSlug, setEditCourseSlug] = useState('')
+  const [addLessonChapterId, setAddLessonChapterId] = useState<string | null>(null)
+  const [newLessonTitle, setNewLessonTitle] = useState('')
+  const [newLessonTier, setNewLessonTier] = useState('MID1')
+  const [editingLessonId, setEditingLessonId] = useState<string | null>(null)
+  const [editLessonTitle, setEditLessonTitle] = useState('')
+  const [editLessonTier, setEditLessonTier] = useState('')
+  const [draggedChapterId, setDraggedChapterId] = useState<string | null>(null)
   const router = useRouter()
 
   const loadData = useCallback(async () => {
@@ -158,6 +171,122 @@ export default function AdminContentPage() {
     } catch {}
   }
 
+  const createCourse = async () => {
+    if (!newCourseTitle.trim()) return
+    const slug = newCourseSlug.trim() || newCourseTitle.trim().toLowerCase().replace(/\s+/g, '-')
+    try {
+      await api('/api/admin/courses', {
+        method: 'POST',
+        body: { title: newCourseTitle, slug },
+      })
+      setNewCourseTitle('')
+      setNewCourseSlug('')
+      setShowCreateCourse(false)
+      showFeedback('تم إضافة المادة')
+      loadData()
+    } catch (err: unknown) {
+      showFeedback(err instanceof Error ? err.message : 'حدث خطأ')
+    }
+  }
+
+  const updateCourse = async (id: string) => {
+    try {
+      await api(`/api/admin/courses/${id}`, {
+        method: 'PUT',
+        body: { title: editCourseTitle, slug: editCourseSlug },
+      })
+      setEditingCourseId(null)
+      showFeedback('تم تحديث المادة')
+      loadData()
+    } catch (err: unknown) {
+      showFeedback(err instanceof Error ? err.message : 'حدث خطأ')
+    }
+  }
+
+  const deleteCourse = async (id: string) => {
+    if (!confirm('حذف المادة وحذف جميع الفصول والدروس؟')) return
+    try {
+      await api(`/api/admin/courses/${id}`, { method: 'DELETE' })
+      setSelectedCourse(null)
+      setEditingCourseId(null)
+      showFeedback('تم حذف المادة')
+      loadData()
+    } catch (err: unknown) {
+      showFeedback(err instanceof Error ? err.message : 'حدث خطأ')
+    }
+  }
+
+  const createLesson = async (chapterId: string) => {
+    if (!selectedCourse || !newLessonTitle.trim()) return
+    try {
+      await api('/api/admin/lessons', {
+        method: 'POST',
+        body: { courseId: selectedCourse, chapterId, title: newLessonTitle, tier: newLessonTier },
+      })
+      setNewLessonTitle('')
+      setAddLessonChapterId(null)
+      showFeedback('تم إضافة الدرس')
+      loadData()
+    } catch (err: unknown) {
+      showFeedback(err instanceof Error ? err.message : 'حدث خطأ')
+    }
+  }
+
+  const updateLesson = async (lessonId: string) => {
+    try {
+      await api(`/api/admin/lessons/${lessonId}`, {
+        method: 'PUT',
+        body: { title: editLessonTitle, tier: editLessonTier },
+      })
+      setEditingLessonId(null)
+      showFeedback('تم تحديث الدرس')
+      loadData()
+    } catch (err: unknown) {
+      showFeedback(err instanceof Error ? err.message : 'حدث خطأ')
+    }
+  }
+
+  const deleteLesson = async (lessonId: string) => {
+    if (!confirm('حذف الدرس؟')) return
+    try {
+      await api(`/api/admin/lessons/${lessonId}`, { method: 'DELETE' })
+      showFeedback('تم حذف الدرس')
+      loadData()
+    } catch (err: unknown) {
+      showFeedback(err instanceof Error ? err.message : 'حدث خطأ')
+    }
+  }
+
+  const handleChapterDragStart = (e: React.DragEvent, chapterId: string) => {
+    setDraggedChapterId(chapterId)
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/plain', chapterId)
+  }
+  const handleChapterDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+  }
+  const handleChapterDrop = async (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault()
+    setDraggedChapterId(null)
+    if (!selectedCourse || !courseChapters.length) return
+    const sourceId = e.dataTransfer.getData('text/plain')
+    const sourceIndex = courseChapters.findIndex((c) => c.id === sourceId)
+    if (sourceIndex === -1 || sourceIndex === dropIndex) return
+    const ordered = [...courseChapters]
+    const [moved] = ordered.splice(sourceIndex, 1)
+    ordered.splice(dropIndex, 0, moved)
+    try {
+      await api('/api/admin/chapters/reorder', {
+        method: 'PUT',
+        body: { orderedIds: ordered.map((c) => c.id) },
+      })
+      showFeedback('تم إعادة ترتيب الفصول')
+      loadData()
+    } catch {}
+  }
+  const handleChapterDragEnd = () => setDraggedChapterId(null)
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F3F4F6]">
@@ -185,19 +314,108 @@ export default function AdminContentPage() {
           </div>
         )}
 
-        {courses.length > 1 && (
-          <div className="mb-6">
-            <select
-              value={selectedCourse || ''}
-              onChange={(e) => setSelectedCourse(e.target.value)}
-              className="px-4 py-2 border border-gray-200 text-[#1A2B4C] text-sm bg-white"
-            >
-              {courses.map((c) => (
-                <option key={c.id} value={c.id}>{c.title}</option>
-              ))}
-            </select>
+        <div className="mb-6 flex flex-wrap items-center gap-4">
+          <h2 className="font-display text-lg text-[#1A2B4C] flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-[#FF4F00]" />
+            إدارة المواد
+          </h2>
+          <button
+            onClick={() => setShowCreateCourse(true)}
+            className="bg-[#1A2B4C] text-sm px-4 py-2 text-white flex items-center gap-1.5 hover:bg-[#1A2B4C]/90"
+          >
+            <Plus className="w-4 h-4" /> إضافة مادة
+          </button>
+        </div>
+        {showCreateCourse && (
+          <div className="mb-4 bg-white p-5 border border-[#1A2B4C]/20">
+            <div className="flex flex-wrap gap-3 items-end">
+              <div className="min-w-[200px]">
+                <label className="block text-xs text-gray-500 mb-2">عنوان المادة</label>
+                <input
+                  type="text"
+                  value={newCourseTitle}
+                  onChange={(e) => setNewCourseTitle(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-200 text-[#1A2B4C] text-sm bg-white"
+                  placeholder="عنوان المادة"
+                />
+              </div>
+              <div className="min-w-[160px]">
+                <label className="block text-xs text-gray-500 mb-2">الرابط (slug)</label>
+                <input
+                  type="text"
+                  value={newCourseSlug}
+                  onChange={(e) => setNewCourseSlug(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-200 text-[#1A2B4C] text-sm bg-white"
+                  placeholder="course-slug"
+                  dir="ltr"
+                />
+              </div>
+              <button onClick={createCourse} className="bg-[#1A2B4C] text-sm px-4 py-2 text-white">إضافة</button>
+              <button onClick={() => setShowCreateCourse(false)} className="text-gray-400 px-4 py-2 text-sm hover:text-gray-600">إلغاء</button>
+            </div>
           </div>
         )}
+        {courses.some((c) => editingCourseId === c.id) && (
+          <div className="mb-4 bg-white p-5 border border-gray-200">
+            {(() => {
+              const c = courses.find((x) => x.id === editingCourseId)
+              if (!c) return null
+              return (
+                <div className="flex flex-wrap gap-3 items-end">
+                  <input
+                    type="text"
+                    value={editCourseTitle}
+                    onChange={(e) => setEditCourseTitle(e.target.value)}
+                    className="px-3 py-2 border border-gray-200 text-[#1A2B4C] text-sm bg-white min-w-[200px]"
+                  />
+                  <input
+                    type="text"
+                    value={editCourseSlug}
+                    onChange={(e) => setEditCourseSlug(e.target.value)}
+                    className="px-3 py-2 border border-gray-200 text-[#1A2B4C] text-sm bg-white min-w-[160px]"
+                    dir="ltr"
+                  />
+                  <button onClick={() => updateCourse(c.id)} className="bg-[#1A2B4C] text-sm px-3 py-2 text-white">حفظ</button>
+                  <button onClick={() => setEditingCourseId(null)} className="text-gray-400 px-3 py-2 text-sm">إلغاء</button>
+                </div>
+              )
+            })()}
+          </div>
+        )}
+
+        <div className="mb-6">
+          <label className="block text-sm text-gray-600 mb-2">اختر المادة</label>
+          <select
+            value={selectedCourse || ''}
+            onChange={(e) => setSelectedCourse(e.target.value)}
+            className="px-4 py-2 border border-gray-200 text-[#1A2B4C] text-sm bg-white min-w-[280px]"
+          >
+            {courses.map((c) => (
+              <option key={c.id} value={c.id}>{c.title}</option>
+            ))}
+          </select>
+          {selectedCourse && courses.find((c) => c.id === selectedCourse) && (
+            <div className="mt-2 flex gap-2">
+              <button
+                onClick={() => {
+                  const co = courses.find((c) => c.id === selectedCourse)!
+                  setEditingCourseId(co.id)
+                  setEditCourseTitle(co.title)
+                  setEditCourseSlug(co.slug)
+                }}
+                className="text-xs text-gray-500 hover:text-[#1A2B4C] flex items-center gap-1"
+              >
+                <Pencil className="w-3 h-3" /> تعديل المادة
+              </button>
+              <button
+                onClick={() => selectedCourse && deleteCourse(selectedCourse)}
+                className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1"
+              >
+                <Trash2 className="w-3 h-3" /> حذف المادة
+              </button>
+            </div>
+          )}
+        </div>
 
         <div className="mb-6 bg-white p-5 border border-gray-200">
           <h2 className="font-display text-lg text-[#1A2B4C] mb-4">قفل حسب المستوى</h2>
@@ -277,7 +495,15 @@ export default function AdminContentPage() {
         <div className="space-y-3">
           {courseChapters.length > 0 ? (
             courseChapters.map((chapter, idx) => (
-              <div key={chapter.id} className="bg-white border border-gray-200 overflow-hidden">
+              <div
+                key={chapter.id}
+                className={`bg-white border border-gray-200 overflow-hidden ${draggedChapterId === chapter.id ? 'opacity-50' : ''}`}
+                draggable
+                onDragStart={(e) => handleChapterDragStart(e, chapter.id)}
+                onDragOver={handleChapterDragOver}
+                onDrop={(e) => handleChapterDrop(e, idx)}
+                onDragEnd={handleChapterDragEnd}
+              >
                 <div className="p-4">
                   {editingChapter === chapter.id ? (
                     <div className="flex flex-wrap gap-3 items-end">
@@ -293,6 +519,9 @@ export default function AdminContentPage() {
                   ) : (
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
+                        <div className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-[#1A2B4C]" title="اسحب لإعادة الترتيب">
+                          <GripVertical className="w-5 h-5" />
+                        </div>
                         <div className="flex flex-col gap-0.5">
                           <button onClick={() => moveChapter(courseChapters, idx, -1)} disabled={idx === 0} className="text-gray-300 hover:text-[#1A2B4C] disabled:opacity-20">
                             <ChevronUp className="w-4 h-4" />
@@ -337,30 +566,82 @@ export default function AdminContentPage() {
                   )}
                 </div>
 
+                {addLessonChapterId === chapter.id && (
+                  <div className="border-t border-gray-100 px-6 py-3 bg-gray-50 flex flex-wrap gap-2 items-end">
+                    <input
+                      type="text"
+                      value={newLessonTitle}
+                      onChange={(e) => setNewLessonTitle(e.target.value)}
+                      placeholder="عنوان الدرس"
+                      className="px-3 py-1.5 border border-gray-200 text-[#1A2B4C] text-sm bg-white min-w-[180px]"
+                    />
+                    <select value={newLessonTier} onChange={(e) => setNewLessonTier(e.target.value)} className="px-3 py-1.5 border border-gray-200 text-[#1A2B4C] text-sm bg-white">
+                      <option value="MID1">{TIER_LABELS.MID1}</option>
+                      <option value="MID2">{TIER_LABELS.MID2}</option>
+                      <option value="FINAL">{TIER_LABELS.FINAL}</option>
+                    </select>
+                    <button onClick={() => createLesson(chapter.id)} className="bg-[#1A2B4C] text-sm px-3 py-1.5 text-white">إضافة</button>
+                    <button onClick={() => { setAddLessonChapterId(null); setNewLessonTitle('') }} className="text-gray-400 px-3 py-1.5 text-sm">إلغاء</button>
+                  </div>
+                )}
                 {chapter.lessons.length > 0 && (
                   <div className="border-t border-gray-100">
                     {chapter.lessons.map((lesson) => (
                       <div key={lesson.id} className="flex items-center justify-between px-6 py-2.5 border-b border-gray-50 last:border-b-0">
-                        <span className="text-sm text-gray-600">{lesson.title}</span>
-                        <div className="flex items-center gap-2">
-                          {lesson.durationMinutes && (
-                            <span className="text-xs text-gray-400 font-mono-text">{lesson.durationMinutes} د</span>
-                          )}
-                          <button
-                            onClick={() => toggleLock('LESSON', lesson.id, !isLocked('LESSON', lesson.id))}
-                            className={`px-2 py-0.5 text-xs flex items-center gap-1 ${
-                              isLocked('LESSON', lesson.id)
-                                ? 'bg-red-50 text-red-600 border border-red-200'
-                                : 'bg-emerald-50 text-emerald-600 border border-emerald-200'
-                            }`}
-                          >
-                            {isLocked('LESSON', lesson.id) ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
-                          </button>
-                        </div>
+                        {editingLessonId === lesson.id ? (
+                          <div className="flex flex-wrap gap-2 items-center py-1">
+                            <input
+                              type="text"
+                              value={editLessonTitle}
+                              onChange={(e) => setEditLessonTitle(e.target.value)}
+                              className="px-2 py-1 border border-gray-200 text-[#1A2B4C] text-sm bg-white min-w-[160px]"
+                            />
+                            <select value={editLessonTier} onChange={(e) => setEditLessonTier(e.target.value)} className="px-2 py-1 border border-gray-200 text-[#1A2B4C] text-sm bg-white">
+                              <option value="MID1">{TIER_LABELS.MID1}</option>
+                              <option value="MID2">{TIER_LABELS.MID2}</option>
+                              <option value="FINAL">{TIER_LABELS.FINAL}</option>
+                            </select>
+                            <button onClick={() => updateLesson(lesson.id)} className="text-xs bg-[#1A2B4C] text-white px-2 py-1">حفظ</button>
+                            <button onClick={() => setEditingLessonId(null)} className="text-xs text-gray-400 px-2 py-1">إلغاء</button>
+                          </div>
+                        ) : (
+                          <>
+                            <span className="text-sm text-gray-600">{lesson.title}</span>
+                            <div className="flex items-center gap-2">
+                              {lesson.durationMinutes && (
+                                <span className="text-xs text-gray-400 font-mono-text">{lesson.durationMinutes} د</span>
+                              )}
+                              <button
+                                onClick={() => toggleLock('LESSON', lesson.id, !isLocked('LESSON', lesson.id))}
+                                className={`px-2 py-0.5 text-xs flex items-center gap-1 ${
+                                  isLocked('LESSON', lesson.id)
+                                    ? 'bg-red-50 text-red-600 border border-red-200'
+                                    : 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                                }`}
+                              >
+                                {isLocked('LESSON', lesson.id) ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+                              </button>
+                              <button onClick={() => { setEditingLessonId(lesson.id); setEditLessonTitle(lesson.title); setEditLessonTier(lesson.tier) }} className="text-gray-300 hover:text-[#1A2B4C] p-0.5">
+                                <Pencil className="w-3.5 h-3.5" />
+                              </button>
+                              <button onClick={() => deleteLesson(lesson.id)} className="text-gray-300 hover:text-red-500 p-0.5">
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </>
+                        )}
                       </div>
                     ))}
                   </div>
                 )}
+                <div className="border-t border-gray-50 px-6 py-2">
+                  <button
+                    onClick={() => setAddLessonChapterId(addLessonChapterId === chapter.id ? null : chapter.id)}
+                    className="text-xs text-[#1A2B4C] hover:underline flex items-center gap-1"
+                  >
+                    <Plus className="w-3 h-3" /> إضافة درس
+                  </button>
+                </div>
               </div>
             ))
           ) : (
