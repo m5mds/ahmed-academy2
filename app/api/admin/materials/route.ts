@@ -11,14 +11,15 @@ export async function GET() {
     const payload = await verifyAccessToken(token)
     if (!payload || payload.role !== 'ADMIN') return NextResponse.json({ message: 'غير مصرح' }, { status: 403 })
 
-    const courses = await prisma.course.findMany({
+    const materials = await prisma.material.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
         _count: { select: { chapters: true, lessons: true } },
       },
     })
-    return NextResponse.json({ courses })
-  } catch {
+    return NextResponse.json({ materials })
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }
@@ -44,10 +45,10 @@ export async function POST(request: Request) {
     if (!title || !slug) {
       return NextResponse.json({ message: 'العنوان والرابط (slug) مطلوبان' }, { status: 400 })
     }
-    const existing = await prisma.course.findUnique({ where: { slug } })
+    const existing = await prisma.material.findUnique({ where: { slug } })
     if (existing) return NextResponse.json({ message: 'رابط المادة مستخدم مسبقاً' }, { status: 400 })
 
-    const course = await prisma.course.create({
+    const material = await prisma.material.create({
       data: {
         title,
         slug: slug.trim().toLowerCase().replace(/\s+/g, '-'),
@@ -58,8 +59,9 @@ export async function POST(request: Request) {
         isPublished: Boolean(isPublished),
       },
     })
-    return NextResponse.json({ course }, { status: 201 })
-  } catch {
+    return NextResponse.json({ material }, { status: 201 })
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }

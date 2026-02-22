@@ -12,20 +12,20 @@ export async function POST(request: Request) {
     if (!payload || payload.role !== 'ADMIN') return NextResponse.json({ message: 'غير مصرح' }, { status: 403 })
 
     const body = await request.json()
-    const { courseId, chapterId, title, tier, durationMinutes, isPreview } = body as {
-      courseId: string
+    const { materialId, chapterId, title, tier, durationMinutes, isPreview } = body as {
+      materialId: string
       chapterId?: string
       title: string
       tier?: string
       durationMinutes?: number
       isPreview?: boolean
     }
-    if (!courseId || !title) {
+    if (!materialId || !title) {
       return NextResponse.json({ message: 'المادة والعنوان مطلوبان' }, { status: 400 })
     }
 
     const maxOrder = await prisma.lesson.aggregate({
-      where: chapterId ? { chapterId } : { courseId, chapterId: null },
+      where: chapterId ? { chapterId } : { materialId, chapterId: null },
       _max: { orderIndex: true },
     })
     const orderIndex = (maxOrder._max.orderIndex ?? 0) + 1
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 
     const lesson = await prisma.lesson.create({
       data: {
-        courseId,
+        materialId,
         chapterId: chapterId || null,
         title,
         tier: lessonTier,
@@ -43,7 +43,8 @@ export async function POST(request: Request) {
       },
     })
     return NextResponse.json({ lesson }, { status: 201 })
-  } catch {
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }

@@ -19,12 +19,13 @@ export async function GET() {
 
     const [totalUsers, totalCourses, totalEnrollments] = await Promise.all([
       prisma.user.count(),
-      prisma.course.count(),
+      prisma.material.count(),
       prisma.enrollment.count(),
     ])
 
     return NextResponse.json({ totalUsers, totalCourses, totalEnrollments })
-  } catch {
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }

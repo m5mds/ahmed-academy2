@@ -58,7 +58,8 @@ export async function POST(request: Request) {
     })
 
     return response
-  } catch {
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ في الخادم' }, { status: 500 })
   }
 }

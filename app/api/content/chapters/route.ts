@@ -18,29 +18,29 @@ export async function GET(request: Request) {
     }
 
     const url = new URL(request.url)
-    const courseId = url.searchParams.get('courseId')
+    const materialId = url.searchParams.get('materialId')
 
     const enrollments = await prisma.enrollment.findMany({
       where: { userId: payload.userId },
-      include: { course: true },
+      include: { material: true },
     })
 
     if (enrollments.length === 0) {
-      return NextResponse.json({ grouped: { MID1: [], MID2: [], FINAL: [] }, enrollment: null, courses: [] })
+      return NextResponse.json({ grouped: { MID1: [], MID2: [], FINAL: [] }, enrollment: null, materials: [] })
     }
 
-    const targetCourseId = courseId && courseId !== 'all'
-      ? courseId
-      : enrollments[0].courseId
+    const targetCourseId = materialId && materialId !== 'all'
+      ? materialId
+      : enrollments[0].materialId
 
-    const enrollment = enrollments.find(e => e.courseId === targetCourseId) || enrollments[0]
+    const enrollment = enrollments.find(e => e.materialId === targetCourseId) || enrollments[0]
 
     const isExpired = enrollment.expiresAt
       ? new Date(enrollment.expiresAt) < new Date()
       : false
 
     const chapters = await prisma.chapter.findMany({
-      where: { courseId: targetCourseId },
+      where: { materialId: targetCourseId },
       orderBy: { orderIndex: 'asc' },
       include: {
         lessons: { orderBy: { orderIndex: 'asc' } },
@@ -89,9 +89,10 @@ export async function GET(request: Request) {
     return NextResponse.json({
       grouped,
       enrollment: { tier: enrollment.tier, expiresAt: enrollment.expiresAt },
-      courses: enrollments.map(e => ({ id: e.courseId, title: e.course.title })),
+      materials: enrollments.map(e => ({ id: e.materialId, title: e.material.title })),
     })
-  } catch {
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }

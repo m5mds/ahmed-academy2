@@ -1,13 +1,13 @@
 # Ahmed Academy
 
-Ahmed Academy is a professional Arabic educational platform designed to provide high-quality courses with features like Zoom integration for live classes, real-time student notifications, and course management tools.
+Ahmed Academy is a professional Arabic educational platform designed to provide high-quality materials with features like Zoom integration for live classes, real-time student notifications, and material management tools.
 
 ## 🚀 Features
 
-- **Course Management**: Admins can create and manage courses, lessons, and content.
+- **Material Management**: Admins can create and manage materials, lessons, and content.
 - **Live Classes**: Integrated Zoom meeting creation for real-time interaction.
 - **Student Dashboard**: Personalized dashboard for tracking progress and joining live sessions.
-- **Notifications**: Real-time notifications for live meetings and course updates.
+- **Notifications**: Real-time notifications for live meetings and material updates.
 - **RTL Support**: Full right-to-left support for a seamless Arabic user experience.
 - **Responsive Design**: Premium look and feel across all device sizes.
 

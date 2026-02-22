@@ -102,7 +102,7 @@ export default function AdminDashboard() {
             <p className="text-sm text-gray-500">قفل وفتح المحتوى على مستوى الفصول والدروس</p>
           </Link>
           <Link
-            href="/courses"
+            href="/materials"
             className="group bg-white border border-gray-200 p-6 hover:border-[#1A2B4C] transition-all"
           >
             <FileText className="w-8 h-8 text-[#1A2B4C] mb-4" />

@@ -6,7 +6,7 @@ export async function GET(
   { params }: { params: { slug: string } }
 ) {
   try {
-    const course = await prisma.course.findUnique({
+    const material = await prisma.material.findUnique({
       where: { slug: params.slug },
       include: {
         lessons: { orderBy: { orderIndex: 'asc' } },
@@ -14,12 +14,13 @@ export async function GET(
       },
     })
 
-    if (!course) {
+    if (!material) {
       return NextResponse.json({ message: 'المادة غير موجودة' }, { status: 404 })
     }
 
-    return NextResponse.json({ course })
-  } catch {
+    return NextResponse.json({ material })
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }

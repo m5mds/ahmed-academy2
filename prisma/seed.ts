@@ -33,9 +33,9 @@ async function main() {
       console.log('Admin user already exists')
     }
 
-    const existingCourse = await prisma.course.findFirst()
+    const existingCourse = await prisma.material.findFirst()
     if (!existingCourse) {
-      await prisma.course.create({
+      await prisma.material.create({
         data: {
           slug: 'arabic-fundamentals',
           title: 'أساسيات اللغة العربية',
@@ -58,7 +58,7 @@ async function main() {
         },
       })
 
-      await prisma.course.create({
+      await prisma.material.create({
         data: {
           slug: 'arabic-grammar',
           title: 'قواعد النحو العربي',
@@ -81,7 +81,7 @@ async function main() {
         },
       })
 
-      await prisma.course.create({
+      await prisma.material.create({
         data: {
           slug: 'arabic-conversation',
           title: 'المحادثة باللغة العربية',
@@ -103,9 +103,9 @@ async function main() {
         },
       })
 
-      console.log('Sample courses created')
+      console.log('Sample materials created')
     } else {
-      console.log('Courses already exist')
+      console.log('Materials already exist')
     }
   } finally {
     await prisma.$disconnect()

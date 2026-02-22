@@ -63,7 +63,7 @@ model User {
   @@map("users")
 }
 
-model Course {
+model Material {
   id               String      @id @default(uuid())
   slug             String      @unique
   title            String
@@ -87,19 +87,19 @@ model Course {
   enrollments  Enrollment[]
   testimonials Testimonial[]
 
-  @@map("courses")
+  @@map("materials")
 }
 
 model Chapter {
   id         String   @id @default(uuid())
-  courseId    String   @map("course_id")
+  materialId    String   @map("course_id")
   title      String
   tier       Tier     @default(MID1)
   orderIndex Int      @map("order_index")
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 
-  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  material  Material   @relation(fields: [materialId], references: [id], onDelete: Cascade)
   lessons Lesson[]
 
   @@map("chapters")
@@ -107,7 +107,7 @@ model Chapter {
 
 model Lesson {
   id              String   @id @default(uuid())
-  courseId         String   @map("course_id")
+  materialId         String   @map("course_id")
   chapterId        String?  @map("chapter_id")
   title           String
   description     String?
@@ -120,7 +120,7 @@ model Lesson {
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  course   Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  material   Material           @relation(fields: [materialId], references: [id], onDelete: Cascade)
   chapter  Chapter?         @relation(fields: [chapterId], references: [id], onDelete: SetNull)
   progress LessonProgress[]
   notes    Note[]
@@ -157,7 +157,7 @@ model LockAudit {
 model Enrollment {
   id          String    @id @default(uuid())
   userId      String    @map("user_id")
-  courseId     String    @map("course_id")
+  materialId     String    @map("course_id")
   tier        Tier      @default(FULL)
   expiresAt   DateTime? @map("expires_at")
   enrolledAt  DateTime  @default(now()) @map("enrolled_at")
@@ -165,9 +165,9 @@ model Enrollment {
   progress    Decimal   @default(0) @db.Decimal(5, 2)
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, courseId])
+  @@unique([userId, materialId])
   @@map("enrollments")
 }
 
@@ -255,14 +255,14 @@ model Note {
 model Testimonial {
   id         String   @id @default(uuid())
   userId     String   @map("user_id")
-  courseId    String   @map("course_id")
+  materialId    String   @map("course_id")
   content    String
   rating     Int
   isFeatured Boolean  @default(false) @map("is_featured")
   createdAt  DateTime @default(now()) @map("created_at")
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
 
   @@map("testimonials")
 }

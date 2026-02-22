@@ -15,23 +15,23 @@ arabic-academy/
 │   ├── (student)/                # Protected student routes
 │   │   ├── dashboard/
 │   │   │   └── page.tsx
-│   │   ├── my-courses/
+│   │   ├── my-materials/
 │   │   │   └── page.tsx
 │   │   ├── certificates/
 │   │   │   └── page.tsx
 │   │   └── settings/
 │   │       └── page.tsx
-│   ├── courses/
-│   │   ├── page.tsx              # Course list
+│   ├── materials/
+│   │   ├── page.tsx              # Material list
 │   │   └── [slug]/
-│   │       └── page.tsx          # Course details
+│   │       └── page.tsx          # Material details
 │   ├── learn/
-│   │   └── [courseId]/
+│   │   └── [materialId]/
 │   │       └── [lessonId]/
 │   │           └── page.tsx      # Video player
 │   ├── api/                      # API routes
 │   │   ├── auth/
-│   │   ├── courses/
+│   │   ├── materials/
 │   │   ├── lessons/
 │   │   └── enrollment/
 │   ├── layout.tsx                # Root layout (RTL support)
@@ -45,7 +45,7 @@ arabic-academy/
 │   │   ├── CreatorBio.tsx
 │   │   ├── Testimonials.tsx
 │   │   └── FAQ.tsx
-│   ├── courses/
+│   ├── materials/
 │   │   ├── CourseCard.tsx
 │   │   ├── CourseGrid.tsx
 │   │   ├── CourseFilter.tsx
@@ -78,7 +78,7 @@ arabic-academy/
 │   ├── db.ts                     # Database client
 │   └── utils.ts                  # Utilities
 ├── types/
-│   ├── course.ts
+│   ├── material.ts
 │   ├── user.ts
 │   ├── lesson.ts
 │   └── enrollment.ts
@@ -154,9 +154,9 @@ CREATE TABLE users (
 );
 ```
 
-### Courses Table
+### Materials Table
 ```sql
-CREATE TABLE courses (
+CREATE TABLE materials (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   slug VARCHAR(255) UNIQUE NOT NULL,
   title VARCHAR(500) NOT NULL,
@@ -181,7 +181,7 @@ CREATE TABLE courses (
 ```sql
 CREATE TABLE lessons (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
+  course_id UUID REFERENCES materials(id) ON DELETE CASCADE,
   title VARCHAR(500) NOT NULL,
   description TEXT,
   video_url VARCHAR(500),
@@ -199,7 +199,7 @@ CREATE TABLE lessons (
 CREATE TABLE enrollments (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
+  course_id UUID REFERENCES materials(id) ON DELETE CASCADE,
   enrolled_at TIMESTAMP DEFAULT NOW(),
   completed_at TIMESTAMP,
   progress DECIMAL(5, 2) DEFAULT 0, -- Percentage
@@ -238,7 +238,7 @@ CREATE TABLE notes (
 CREATE TABLE certificates (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
+  course_id UUID REFERENCES materials(id) ON DELETE CASCADE,
   certificate_url VARCHAR(500),
   issued_at TIMESTAMP DEFAULT NOW(),
   UNIQUE(user_id, course_id)
@@ -250,7 +250,7 @@ CREATE TABLE certificates (
 CREATE TABLE testimonials (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
+  course_id UUID REFERENCES materials(id) ON DELETE CASCADE,
   content TEXT NOT NULL,
   rating INTEGER CHECK (rating >= 1 AND rating <= 5),
   is_featured BOOLEAN DEFAULT false,
@@ -267,15 +267,15 @@ CREATE TABLE testimonials (
 - `POST /api/auth/reset-password` - Request password reset
 - `POST /api/auth/verify-token` - Verify JWT token
 
-### Courses
-- `GET /api/courses` - Get all published courses (with filters)
-- `GET /api/courses/:slug` - Get course details
-- `GET /api/courses/:id/curriculum` - Get course curriculum
+### Materials
+- `GET /api/materials` - Get all published materials (with filters)
+- `GET /api/materials/:slug` - Get material details
+- `GET /api/materials/:id/curriculum` - Get material curriculum
 
 ### Enrollment
-- `POST /api/enrollment/enroll` - Enroll in course (after payment)
-- `GET /api/enrollment/my-courses` - Get user's enrolled courses
-- `GET /api/enrollment/:courseId/progress` - Get course progress
+- `POST /api/enrollment/enroll` - Enroll in material (after payment)
+- `GET /api/enrollment/my-materials` - Get user's enrolled materials
+- `GET /api/enrollment/:materialId/progress` - Get material progress
 
 ### Lessons
 - `GET /api/lessons/:id` - Get lesson details
@@ -290,7 +290,7 @@ CREATE TABLE testimonials (
 
 ### Certificates
 - `GET /api/certificates/my-certificates` - Get user certificates
-- `POST /api/certificates/generate` - Generate certificate (auto on course completion)
+- `POST /api/certificates/generate` - Generate certificate (auto on material completion)
 
 ### Testimonials
 - `GET /api/testimonials/featured` - Get featured testimonials
@@ -318,24 +318,24 @@ App Layout (RTL)
 │   ├── Landing Page
 │   │   ├── Hero
 │   │   ├── Stats
-│   │   ├── Featured Courses Slider
+│   │   ├── Featured Materials Slider
 │   │   ├── Creator Bio
 │   │   ├── Testimonials
 │   │   └── FAQ
-│   ├── Courses Page
-│   │   ├── Course Filter
-│   │   └── Course Grid
-│   │       └── Course Card (x N)
-│   ├── Course Details Page
-│   │   ├── Course Banner
+│   ├── Materials Page
+│   │   ├── Material Filter
+│   │   └── Material Grid
+│   │       └── Material Card (x N)
+│   ├── Material Details Page
+│   │   ├── Material Banner
 │   │   ├── What You'll Learn
-│   │   ├── Course Curriculum
+│   │   ├── Material Curriculum
 │   │   ├── Preview Video
 │   │   └── Price Box (Sticky)
 │   ├── Student Dashboard
 │   │   ├── Dashboard Stats
 │   │   ├── Continue Learning
-│   │   ├── My Courses Grid
+│   │   ├── My Materials Grid
 │   │   └── Recent Certificates
 │   └── Video Player Page
 │       ├── Video Player
@@ -362,7 +362,7 @@ App Layout (RTL)
 
 3. **Caching Strategy**
    - Static pages: ISR (revalidate every 3600s)
-   - Course list: SSR with cache
+   - Material list: SSR with cache
    - User data: Client-side cache (SWR)
 
 4. **Bundle Size**

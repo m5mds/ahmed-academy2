@@ -4,9 +4,9 @@ import HomeClient from '@/components/HomeClient'
 
 export const dynamic = 'force-dynamic'
 
-async function getFeaturedCourses() {
+async function getFeaturedMaterials() {
   try {
-    return await prisma.course.findMany({
+    return await prisma.material.findMany({
       where: { isPublished: true },
       take: 6,
       orderBy: { createdAt: 'desc' },
@@ -18,20 +18,20 @@ async function getFeaturedCourses() {
 }
 
 export default async function HomePage() {
-  const courses = await getFeaturedCourses()
+  const materials = await getFeaturedMaterials()
 
-  const serializedCourses = courses.map(c => ({
-    id: c.id,
-    title: c.title,
-    slug: c.slug,
-    description: c.description,
-    shortDescription: c.shortDescription,
-    level: c.level,
-    price: c.price ? Number(c.price) : null,
-    isFree: c.isFree,
-    category: c.category,
-    _count: { enrollments: c._count.enrollments },
+  const serializedMaterials = materials.map(m => ({
+    id: m.id,
+    title: m.title,
+    slug: m.slug,
+    description: m.description,
+    shortDescription: m.shortDescription,
+    level: m.level,
+    price: m.price ? Number(m.price) : null,
+    isFree: m.isFree,
+    category: m.category,
+    _count: { enrollments: m._count.enrollments },
   }))
 
-  return <HomeClient courses={serializedCourses} />
+  return <HomeClient materials={serializedMaterials} />
 }

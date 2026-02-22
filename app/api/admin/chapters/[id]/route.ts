@@ -33,7 +33,8 @@ export async function PUT(
     }
 
     return NextResponse.json({ chapter })
-  } catch {
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }
@@ -52,7 +53,8 @@ export async function DELETE(
     await prisma.chapter.delete({ where: { id: params.id } })
 
     return NextResponse.json({ message: 'تم حذف الفصل' })
-  } catch {
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }

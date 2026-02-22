@@ -41,7 +41,7 @@ export default function Header() {
           <Link href="/" className="text-sm text-gray-500 hover:text-[#1A2B4C] transition-colors">
             الرئيسية
           </Link>
-          <Link href="/courses" className="text-sm text-gray-500 hover:text-[#1A2B4C] transition-colors">
+          <Link href="/materials" className="text-sm text-gray-500 hover:text-[#1A2B4C] transition-colors">
             المواد الدراسية
           </Link>
           <Link href="/contact" className="text-sm text-gray-500 hover:text-[#1A2B4C] transition-colors">
@@ -108,7 +108,7 @@ export default function Header() {
         <div className="md:hidden border-t border-gray-100 bg-white px-6 py-4">
           <div className="flex flex-col gap-4">
             <Link href="/" onClick={() => setMenuOpen(false)} className="text-sm text-gray-600">الرئيسية</Link>
-            <Link href="/courses" onClick={() => setMenuOpen(false)} className="text-sm text-gray-600">المواد الدراسية</Link>
+            <Link href="/materials" onClick={() => setMenuOpen(false)} className="text-sm text-gray-600">المواد الدراسية</Link>
             <Link href="/contact" onClick={() => setMenuOpen(false)} className="text-sm text-gray-600">تواصل معنا</Link>
             {!loading && user ? (
               <>

@@ -11,34 +11,38 @@ export async function checkLessonAccess(
 ): Promise<AccessCheckResult> {
   const lesson = await prisma.lesson.findUnique({
     where: { id: lessonId },
-    include: { chapter: true, course: true },
+    include: { chapter: true, material: true },
   })
 
   if (!lesson) {
-    return { allowed: false, reason: 'الدرس غير موجود' }
+    return { allowed: false, reason: 'Technical Error: Unit not identified.' }
   }
 
+  // 1. Preview Entitlement
   if (lesson.isPreview) {
     return { allowed: true }
   }
 
+  // 2. Enrollment Verification
   const enrollment = await prisma.enrollment.findUnique({
     where: {
-      userId_courseId: {
+      userId_materialId: {
         userId,
-        courseId: lesson.courseId,
+        materialId: lesson.materialId,
       },
     },
   })
 
   if (!enrollment) {
-    return { allowed: false, reason: 'يجب الاشتراك في المادة أولاً' }
+    return { allowed: false, reason: 'Access Denied: Enrollment required.' }
   }
 
+  // 3. Subscription Expiry Protocol
   if (enrollment.expiresAt && new Date(enrollment.expiresAt) < new Date()) {
-    return { allowed: false, reason: 'انتهت صلاحية اشتراكك. يرجى التجديد' }
+    return { allowed: false, reason: 'Cycle Expired: Subscription renewal required.' }
   }
 
+  // 4. Per-Student Implementation Override (Unlocks content even if global lock exists)
   const perStudentUnlock = await prisma.contentLock.findFirst({
     where: {
       scope: 'PER_STUDENT',
@@ -58,6 +62,7 @@ export async function checkLessonAccess(
     return { allowed: true }
   }
 
+  // 5. Global System Lock Check
   const globalLocks = await prisma.contentLock.findMany({
     where: {
       scope: 'GLOBAL',
@@ -73,12 +78,13 @@ export async function checkLessonAccess(
   })
 
   if (globalLocks.length > 0) {
-    return { allowed: false, reason: 'هذا المحتوى مقفل حالياً' }
+    return { allowed: false, reason: 'System Lock: Content currently restricted by HQ.' }
   }
 
+  // 6. Tier Entitlement Matrix
   const tierAllowed = checkTierEntitlement(enrollment.tier, lesson.tier)
   if (!tierAllowed) {
-    return { allowed: false, reason: 'مستواك الحالي لا يسمح بالوصول لهذا الدرس' }
+    return { allowed: false, reason: 'Tier Mismatch: Access restricted to authorized levels.' }
   }
 
   return { allowed: true }
@@ -99,7 +105,7 @@ export async function getContentLockStatus(
   isExpired: boolean
 ): Promise<{ locked: boolean; reason?: string }> {
   if (isExpired) {
-    return { locked: true, reason: 'اشتراك منتهي' }
+    return { locked: true, reason: 'Subscription Expired' }
   }
 
   const perStudentUnlock = await prisma.contentLock.findFirst({
@@ -132,12 +138,13 @@ export async function getContentLockStatus(
   })
 
   if (globalLock) {
-    return { locked: true, reason: 'محتوى مقفل' }
+    return { locked: true, reason: 'System Lock' }
   }
 
   if (enrollmentTier && !checkTierEntitlement(enrollmentTier, lessonTier)) {
-    return { locked: true, reason: 'غير مشمول في اشتراكك' }
+    return { locked: true, reason: 'Tier Restricted' }
   }
 
   return { locked: false }
 }
+

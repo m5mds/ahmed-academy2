@@ -12,10 +12,10 @@ export async function GET(request: Request) {
     if (!payload || payload.role !== 'ADMIN') return NextResponse.json({ message: 'غير مصرح' }, { status: 403 })
 
     const url = new URL(request.url)
-    const courseId = url.searchParams.get('courseId')
+    const materialId = url.searchParams.get('materialId')
 
     const chapters = await prisma.chapter.findMany({
-      where: courseId ? { courseId } : undefined,
+      where: materialId ? { materialId } : undefined,
       orderBy: { orderIndex: 'asc' },
       include: {
         lessons: { orderBy: { orderIndex: 'asc' } },
@@ -23,7 +23,8 @@ export async function GET(request: Request) {
     })
 
     return NextResponse.json({ chapters })
-  } catch {
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }
@@ -36,20 +37,20 @@ export async function POST(request: Request) {
     const payload = await verifyAccessToken(token)
     if (!payload || payload.role !== 'ADMIN') return NextResponse.json({ message: 'غير مصرح' }, { status: 403 })
 
-    const { courseId, title, tier } = await request.json()
+    const { materialId, title, tier } = await request.json()
 
-    if (!courseId || !title || !tier) {
+    if (!materialId || !title || !tier) {
       return NextResponse.json({ message: 'جميع الحقول مطلوبة' }, { status: 400 })
     }
 
     const maxOrder = await prisma.chapter.aggregate({
-      where: { courseId },
+      where: { materialId },
       _max: { orderIndex: true },
     })
 
     const chapter = await prisma.chapter.create({
       data: {
-        courseId,
+        materialId,
         title,
         tier,
         orderIndex: (maxOrder._max.orderIndex ?? 0) + 1,
@@ -58,7 +59,8 @@ export async function POST(request: Request) {
     })
 
     return NextResponse.json({ chapter }, { status: 201 })
-  } catch {
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }

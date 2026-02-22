@@ -54,7 +54,8 @@ export async function POST(request: Request) {
             zoomMeetingId = String(meetingData.id ?? '')
           }
         }
-      } catch {
+      } catch (error) {
+    console.error("[API Error]", error);
         // fallback: admin can set link manually
       }
     }
@@ -71,7 +72,8 @@ export async function POST(request: Request) {
     })
 
     return NextResponse.json({ session, message: 'تم بدء البث المباشر' }, { status: 201 })
-  } catch {
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }

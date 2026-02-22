@@ -34,12 +34,13 @@ export async function PUT(
     if (level !== undefined) updateData.level = level === 'INTERMEDIATE' ? 'INTERMEDIATE' : level === 'ADVANCED' ? 'ADVANCED' : 'BEGINNER'
     if (isPublished !== undefined) updateData.isPublished = Boolean(isPublished)
 
-    const course = await prisma.course.update({
+    const material = await prisma.material.update({
       where: { id: params.id },
       data: updateData,
     })
-    return NextResponse.json({ course })
-  } catch {
+    return NextResponse.json({ material })
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }
@@ -55,9 +56,10 @@ export async function DELETE(
     const payload = await verifyAccessToken(token)
     if (!payload || payload.role !== 'ADMIN') return NextResponse.json({ message: 'غير مصرح' }, { status: 403 })
 
-    await prisma.course.delete({ where: { id: params.id } })
+    await prisma.material.delete({ where: { id: params.id } })
     return NextResponse.json({ message: 'تم حذف المادة' })
-  } catch {
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }

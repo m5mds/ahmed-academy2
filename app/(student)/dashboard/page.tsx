@@ -8,7 +8,7 @@ import { BookOpen, CheckCircle, TrendingUp, ArrowLeft } from 'lucide-react'
 interface Enrollment {
   id: string
   progress: number
-  course: {
+  material: {
     id: string
     title: string
     slug: string
@@ -90,19 +90,19 @@ export default function DashboardPage() {
             {data.enrollments.map((enrollment) => (
               <Link
                 key={enrollment.id}
-                href={`/courses/${enrollment.course.slug}`}
+                href={`/materials/${enrollment.material.slug}`}
                 className="group bg-white border border-gray-200 overflow-hidden hover:border-[#1A2B4C] transition-all"
               >
                 <div className="h-28 bg-gradient-to-br from-[#1A2B4C]/10 to-[#1A2B4C]/5 flex items-center justify-center relative">
                   <BookOpen className="w-10 h-10 text-[#1A2B4C]/20" />
                   <div className="absolute bottom-3 right-3">
                     <span className="bg-[#1A2B4C] px-3 py-1 text-[10px] tracking-widest uppercase text-white">
-                      {enrollment.course.level === 'BEGINNER' ? 'تأسيسي' : enrollment.course.level === 'INTERMEDIATE' ? 'متقدم' : 'احترافي'}
+                      {enrollment.material.level === 'BEGINNER' ? 'تأسيسي' : enrollment.material.level === 'INTERMEDIATE' ? 'متقدم' : 'احترافي'}
                     </span>
                   </div>
                 </div>
                 <div className="p-5">
-                  <h3 className="font-display text-xl text-[#1A2B4C] mb-3 group-hover:underline">{enrollment.course.title}</h3>
+                  <h3 className="font-display text-xl text-[#1A2B4C] mb-3 group-hover:underline">{enrollment.material.title}</h3>
                   <div className="w-full bg-gray-100 h-2 overflow-hidden mb-2">
                     <div
                       className="h-full bg-[#1A2B4C] transition-all"
@@ -123,7 +123,7 @@ export default function DashboardPage() {
           <div className="text-center py-16 bg-white border border-gray-200">
             <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-500 mb-4 text-lg">لم تسجل في أي مادة بعد</p>
-            <Link href="/courses" className="inline-block bg-[#1A2B4C] text-white px-8 py-3 text-sm hover:bg-[#1A2B4C]/90 transition-colors">
+            <Link href="/materials" className="inline-block bg-[#1A2B4C] text-white px-8 py-3 text-sm hover:bg-[#1A2B4C]/90 transition-colors">
               تصفح المواد الدراسية
             </Link>
           </div>

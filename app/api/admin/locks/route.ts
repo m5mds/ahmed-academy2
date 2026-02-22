@@ -16,7 +16,8 @@ export async function GET(request: Request) {
     })
 
     return NextResponse.json({ locks })
-  } catch {
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }
@@ -75,7 +76,8 @@ export async function POST(request: Request) {
     })
 
     return NextResponse.json({ lock })
-  } catch {
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }

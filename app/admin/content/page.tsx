@@ -21,7 +21,7 @@ interface Chapter {
   lessons: Lesson[]
 }
 
-interface Course {
+interface Material {
   id: string
   title: string
   slug: string
@@ -44,7 +44,7 @@ const TIER_LABELS: Record<string, string> = {
 }
 
 export default function AdminContentPage() {
-  const [courses, setCourses] = useState<Course[]>([])
+  const [materials, setCourses] = useState<Material[]>([])
   const [locks, setLocks] = useState<LockItem[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null)
@@ -73,11 +73,11 @@ export default function AdminContentPage() {
 
   const loadData = useCallback(async () => {
     try {
-      const result = await api<{ courses: Course[]; locks: LockItem[] }>('/api/admin/content')
-      setCourses(result.courses)
+      const result = await api<{ materials: Material[]; locks: LockItem[] }>('/api/admin/content')
+      setCourses(result.materials)
       setLocks(result.locks)
-      if (!selectedCourse && result.courses.length > 0) {
-        setSelectedCourse(result.courses[0].id)
+      if (!selectedCourse && result.materials.length > 0) {
+        setSelectedCourse(result.materials[0].id)
       }
     } catch {
       router.push('/')
@@ -98,7 +98,7 @@ export default function AdminContentPage() {
     try {
       await api('/api/admin/chapters', {
         method: 'POST',
-        body: { courseId: selectedCourse, title: newChapterTitle, tier: newChapterTier },
+        body: { materialId: selectedCourse, title: newChapterTitle, tier: newChapterTier },
       })
       setNewChapterTitle('')
       setShowCreateChapter(false)
@@ -175,7 +175,7 @@ export default function AdminContentPage() {
     if (!newCourseTitle.trim()) return
     const slug = newCourseSlug.trim() || newCourseTitle.trim().toLowerCase().replace(/\s+/g, '-')
     try {
-      await api('/api/admin/courses', {
+      await api('/api/admin/materials', {
         method: 'POST',
         body: { title: newCourseTitle, slug },
       })
@@ -191,7 +191,7 @@ export default function AdminContentPage() {
 
   const updateCourse = async (id: string) => {
     try {
-      await api(`/api/admin/courses/${id}`, {
+      await api(`/api/admin/materials/${id}`, {
         method: 'PUT',
         body: { title: editCourseTitle, slug: editCourseSlug },
       })
@@ -206,7 +206,7 @@ export default function AdminContentPage() {
   const deleteCourse = async (id: string) => {
     if (!confirm('حذف المادة وحذف جميع الفصول والدروس؟')) return
     try {
-      await api(`/api/admin/courses/${id}`, { method: 'DELETE' })
+      await api(`/api/admin/materials/${id}`, { method: 'DELETE' })
       setSelectedCourse(null)
       setEditingCourseId(null)
       showFeedback('تم حذف المادة')
@@ -221,7 +221,7 @@ export default function AdminContentPage() {
     try {
       await api('/api/admin/lessons', {
         method: 'POST',
-        body: { courseId: selectedCourse, chapterId, title: newLessonTitle, tier: newLessonTier },
+        body: { materialId: selectedCourse, chapterId, title: newLessonTitle, tier: newLessonTier },
       })
       setNewLessonTitle('')
       setAddLessonChapterId(null)
@@ -295,8 +295,8 @@ export default function AdminContentPage() {
     )
   }
 
-  const course = courses.find((c) => c.id === selectedCourse)
-  const courseChapters = course?.chapters || []
+  const material = materials.find((c) => c.id === selectedCourse)
+  const courseChapters = material?.chapters || []
 
   return (
     <div className="min-h-screen bg-[#F3F4F6] pt-24 pb-12">
@@ -346,7 +346,7 @@ export default function AdminContentPage() {
                   value={newCourseSlug}
                   onChange={(e) => setNewCourseSlug(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-200 text-[#1A2B4C] text-sm bg-white"
-                  placeholder="course-slug"
+                  placeholder="material-slug"
                   dir="ltr"
                 />
               </div>
@@ -355,10 +355,10 @@ export default function AdminContentPage() {
             </div>
           </div>
         )}
-        {courses.some((c) => editingCourseId === c.id) && (
+        {materials.some((c) => editingCourseId === c.id) && (
           <div className="mb-4 bg-white p-5 border border-gray-200">
             {(() => {
-              const c = courses.find((x) => x.id === editingCourseId)
+              const c = materials.find((x) => x.id === editingCourseId)
               if (!c) return null
               return (
                 <div className="flex flex-wrap gap-3 items-end">
@@ -390,15 +390,15 @@ export default function AdminContentPage() {
             onChange={(e) => setSelectedCourse(e.target.value)}
             className="px-4 py-2 border border-gray-200 text-[#1A2B4C] text-sm bg-white min-w-[280px]"
           >
-            {courses.map((c) => (
+            {materials.map((c) => (
               <option key={c.id} value={c.id}>{c.title}</option>
             ))}
           </select>
-          {selectedCourse && courses.find((c) => c.id === selectedCourse) && (
+          {selectedCourse && materials.find((c) => c.id === selectedCourse) && (
             <div className="mt-2 flex gap-2">
               <button
                 onClick={() => {
-                  const co = courses.find((c) => c.id === selectedCourse)!
+                  const co = materials.find((c) => c.id === selectedCourse)!
                   setEditingCourseId(co.id)
                   setEditCourseTitle(co.title)
                   setEditCourseSlug(co.slug)

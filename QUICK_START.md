@@ -15,18 +15,18 @@ arabic-academy/
 ## Key Pages
 
 1. **Landing** (`app/page.tsx`)
-   - Hero + Stats + Featured Courses + Creator Bio + Testimonials + FAQ
+   - Hero + Stats + Featured Materials + Creator Bio + Testimonials + FAQ
 
-2. **Courses** (`app/courses/page.tsx`)
-   - Grid + Filters + Course Cards
+2. **Materials** (`app/materials/page.tsx`)
+   - Grid + Filters + Material Cards
 
-3. **Course Details** (`app/courses/[slug]/page.tsx`)
+3. **Material Details** (`app/materials/[slug]/page.tsx`)
    - Banner + Curriculum + Price Box + Preview Video
 
 4. **Student Dashboard** (`app/(student)/dashboard/page.tsx`)
-   - My Courses + Progress + Certificates
+   - My Materials + Progress + Certificates
 
-5. **Video Player** (`app/learn/[courseId]/[lessonId]/page.tsx`)
+5. **Video Player** (`app/learn/[materialId]/[lessonId]/page.tsx`)
    - Video + Lessons Sidebar + Notes + Resources
 
 6. **Auth** (`app/(auth)/login|register/page.tsx`)
@@ -52,18 +52,18 @@ arabic-academy/
 ## Database Schema
 
 - **users** - Students + Admin
-- **courses** - Single creator courses
-- **lessons** - Course content
+- **materials** - Single creator materials
+- **lessons** - Material content
 - **enrollments** - User enrollments
 - **lesson_progress** - Watch progress
 - **notes** - Lesson notes
-- **certificates** - Course certificates
+- **certificates** - Material certificates
 - **testimonials** - Student reviews
 
 ## API Routes
 
 - `/api/auth/*` - Authentication
-- `/api/courses/*` - Course CRUD
+- `/api/materials/*` - Material CRUD
 - `/api/enrollment/*` - Enrollment logic
 - `/api/lessons/*` - Lesson progress
 - `/api/notes/*` - Notes CRUD
@@ -88,11 +88,11 @@ Use `/security-standards` skill to add:
 
 ## Component Examples
 
-**Course Card:**
+**Material Card:**
 - Image + Title + Description + Price + Students Count + CTA
 
 **Price Box:**
-- Fixed sidebar + Price + Enroll Button + Course Stats
+- Fixed sidebar + Price + Enroll Button + Material Stats
 
 **Video Player:**
 - React Player + Sidebar + Mark Complete + Notes
@@ -107,6 +107,6 @@ All components use `dir="rtl"` and Arabic fonts. Text alignment is automatic.
 2. Configure `.env`
 3. Run migrations
 4. Add creator data
-5. Upload courses
+5. Upload materials
 6. Test enrollment flow
 7. Apply security standards

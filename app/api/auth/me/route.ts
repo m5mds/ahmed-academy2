@@ -24,7 +24,8 @@ export async function GET() {
         role: payload.role,
       },
     })
-  } catch {
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }

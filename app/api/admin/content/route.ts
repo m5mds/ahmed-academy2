@@ -12,10 +12,10 @@ export async function GET(request: Request) {
     if (!payload || payload.role !== 'ADMIN') return NextResponse.json({ message: 'غير مصرح' }, { status: 403 })
 
     const url = new URL(request.url)
-    const courseId = url.searchParams.get('courseId')
+    const materialId = url.searchParams.get('materialId')
 
-    const courses = await prisma.course.findMany({
-      where: courseId ? { id: courseId } : undefined,
+    const materials = await prisma.material.findMany({
+      where: materialId ? { id: materialId } : undefined,
       include: {
         chapters: {
           orderBy: { orderIndex: 'asc' },
@@ -30,8 +30,9 @@ export async function GET(request: Request) {
       where: { scope: 'GLOBAL', locked: true },
     })
 
-    return NextResponse.json({ courses, locks })
-  } catch {
+    return NextResponse.json({ materials, locks })
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }

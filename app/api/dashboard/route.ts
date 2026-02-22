@@ -20,7 +20,7 @@ export async function GET() {
     const enrollments = await prisma.enrollment.findMany({
       where: { userId: payload.userId },
       include: {
-        course: {
+        material: {
           select: {
             id: true,
             title: true,
@@ -41,7 +41,8 @@ export async function GET() {
       totalCourses: enrollments.length,
       completedCourses,
     })
-  } catch {
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }

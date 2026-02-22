@@ -21,7 +21,7 @@ export default function Footer() {
         <div>
           <h4 className="font-display text-lg tracking-[0.2em] uppercase text-[#1A2B4C] mb-6 border-b border-[#1A2B4C]/20 inline-block pb-1">الفهرس الأكاديمي</h4>
           <ul className="space-y-3 font-display text-gray-500 uppercase text-sm">
-            <li><Link href="/courses" className="hover:text-[#1A2B4C] transition-colors">المواد الدراسية</Link></li>
+            <li><Link href="/materials" className="hover:text-[#1A2B4C] transition-colors">المواد الدراسية</Link></li>
             <li><Link href="/about" className="hover:text-[#1A2B4C] transition-colors">عن الأكاديمية</Link></li>
             <li><Link href="/login" className="hover:text-[#1A2B4C] transition-colors">دخول الطلاب</Link></li>
           </ul>

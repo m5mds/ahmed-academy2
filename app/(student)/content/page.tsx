@@ -36,7 +36,7 @@ interface CourseOption {
 interface ContentData {
   grouped: GroupedContent
   enrollment: { tier: string; expiresAt: string | null } | null
-  courses: CourseOption[]
+  materials: CourseOption[]
 }
 
 const TIER_LABELS: Record<string, string> = {
@@ -53,14 +53,14 @@ export default function ContentPage() {
   const [accessMessage, setAccessMessage] = useState<string | null>(null)
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null)
 
-  const loadContent = useCallback(async (courseId?: string) => {
+  const loadContent = useCallback(async (materialId?: string) => {
     setLoading(true)
     try {
-      const url = courseId ? `/api/content/chapters?courseId=${courseId}` : '/api/content/chapters'
+      const url = materialId ? `/api/content/chapters?materialId=${materialId}` : '/api/content/chapters'
       const result = await api<ContentData>(url)
       setData(result)
-      if (!selectedCourseId && result.courses?.length > 0) {
-        setSelectedCourseId(result.courses[0].id)
+      if (!selectedCourseId && result.materials?.length > 0) {
+        setSelectedCourseId(result.materials[0].id)
       }
     } catch {
       setData(null)
@@ -101,7 +101,7 @@ export default function ContentPage() {
         <div className="text-center bg-white p-12 border border-gray-200">
           <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-500 text-lg mb-4">لم تسجل في أي مادة بعد</p>
-          <a href="/courses" className="text-[#1A2B4C] font-semibold hover:underline text-sm">تصفح المواد الدراسية المتاحة</a>
+          <a href="/materials" className="text-[#1A2B4C] font-semibold hover:underline text-sm">تصفح المواد الدراسية المتاحة</a>
         </div>
       </div>
     )
@@ -118,14 +118,14 @@ export default function ContentPage() {
           <p className="text-gray-500 text-sm mt-1">الوحدات والفصول الدراسية</p>
         </div>
 
-        {data.courses && data.courses.length > 1 && (
+        {data.materials && data.materials.length > 1 && (
           <div className="mb-4">
             <select
               value={selectedCourseId || ''}
               onChange={(e) => setSelectedCourseId(e.target.value)}
               className="px-4 py-2 border border-gray-200 text-[#1A2B4C] text-sm bg-white"
             >
-              {data.courses.map((c) => (
+              {data.materials.map((c) => (
                 <option key={c.id} value={c.id}>{c.title}</option>
               ))}
             </select>

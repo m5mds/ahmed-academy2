@@ -9,8 +9,8 @@ A formal Engineering Academy platform built with Next.js 14 (App Router), Prisma
 - **Feb 21, 2026**: Conditional header navigation: Shows Dashboard/Logout when logged in, Login/Register when logged out.
 - **Feb 21, 2026**: Replaced all emoji icons with professional lucide-react icons (Users, BookOpen, Lock, Settings, etc.).
 - **Feb 21, 2026**: Admin route protection: /admin routes redirect to home if user is not authenticated as admin.
-- **Feb 21, 2026**: Full terminology scrub: 100% replaced دورة→مادة across all files including seed data. Removed all certificate references.
-- **Feb 21, 2026**: Dynamic course categories on courses page (derived from DB data, not hardcoded English).
+- **Feb 21, 2026**: Full terminology scrub: 100% replaced مادة→مادة across all files including seed data. Removed all certificate references.
+- **Feb 21, 2026**: Dynamic material categories on materials page (derived from DB data, not hardcoded English).
 
 ## Tech Stack
 - **Framework**: Next.js 14 (App Router)
@@ -40,13 +40,13 @@ app/                    # Next.js App Router pages
   (auth)/               # Auth pages (login, register)
   (student)/            # Student dashboard & content page
   admin/                # Admin dashboard & content management
-  courses/              # Material listing & details
+  materials/              # Material listing & details
   contact/              # Contact page
   api/                  # API routes
     auth/               # Auth endpoints (login, register, logout, me)
     admin/              # Admin APIs (chapters, locks, content, stats)
     content/            # Student content APIs (chapters, video)
-    courses/            # Course APIs
+    materials/            # Material APIs
     dashboard/          # Dashboard APIs
 components/             # React components
   layout/               # Header, Footer
@@ -82,7 +82,7 @@ prisma/
 ### Database
 - Uses Replit built-in PostgreSQL
 - Prisma 7 with `@prisma/adapter-pg` (driver adapter pattern)
-- Schema has: users, courses, chapters, lessons, enrollments, lesson_progress, notes, testimonials, content_locks, lock_audit, payments, attendance, daily_activity, achievements (Certificate model removed)
+- Schema has: users, materials, chapters, lessons, enrollments, lesson_progress, notes, testimonials, content_locks, lock_audit, payments, attendance, daily_activity, achievements (Certificate model removed)
 - Run `npx prisma db push` to sync schema
 - Run `node prisma/seed.ts` to seed
 
@@ -91,12 +91,12 @@ prisma/
 - **Lock Scopes**: GLOBAL (all students), PER_STUDENT (individual)
 - **Lock Levels**: TIER, CHAPTER, LESSON
 - **Precedence Order (Triple-Check Pipeline)**: JWT → Enrollment → Expiry check → Per-student unlock → Global lock → Tier entitlement
-- Course → Chapter (tier-based) → Lesson hierarchy
+- Material → Chapter (tier-based) → Lesson hierarchy
 - All lock/unlock operations logged in LockAudit table
 
 ### Terminology
-- دورة → مادة (Course → Material/Subject)
-- دورات → مواد (Courses → Materials/Subjects)
+- مادة → مادة (Material → Material/Subject)
+- مواد → مواد (Materials → Materials/Subjects)
 - Engineering context: وحدات تقنية (Technical Modules), مخططات (Schematics), هندسة الأنظمة (Systems Engineering)
 
 ### Admin Login

@@ -42,7 +42,8 @@ export async function GET() {
     }))
 
     return NextResponse.json({ sessions: list })
-  } catch {
+  } catch (error) {
+    console.error("[API Error]", error);
     return NextResponse.json({ message: 'حدث خطأ' }, { status: 500 })
   }
 }
